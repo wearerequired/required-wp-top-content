@@ -33,7 +33,7 @@ class RplusWpTopContent {
 	 * @since    1.0.0
 	 * @var      string
 	 */
-	protected $plugin_slug = 'required-wp-top-content';
+	protected $plugin_slug = 'rpluswptopcontent';
 
 	/**
 	 * Instance of this class.
@@ -261,5 +261,131 @@ class RplusWpTopContent {
 	public function enqueue_scripts() {
 		wp_enqueue_script( $this->plugin_slug . '-plugin-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION );
 	}
+
+    /**
+     * Get top visited posts/pages based on synced analytics data and return array of WP_Post Objects
+     * or false when no top contents are available
+     *
+     * @param    array      $post_types     Array of post types to get top contents from
+     * @param    int        $count          Limit of contents to fetch
+     * @return   array|bool
+     * @since    1.0.0
+     */
+    private function get_top_content( Array $post_types, $count ) {
+
+        $args = apply_filters( 'rplus_wp_top_content_default_args', array(
+            'post_type' => $post_types,
+            'nopaging' => true,
+            'post_status' => 'publish',
+            'posts_per_page' => $count,
+            'orderby' => 'meta_value',
+            'order' => 'DESC',
+            'meta_key' => 'rplus_top_content_pageviews',
+            'meta_query' => array(
+                array(
+                    'key' => 'rplus_top_content_pageviews',
+                    'value' => 0,
+                    'compare' => '>'
+                )
+            )
+        ) );
+
+        // query defined post types with synced analytics data.
+        $the_query = new WP_Query( $args );
+
+        $posts = empty( $the_query->found_posts ) ? false : $the_query->get_posts();
+
+        wp_reset_query();
+
+        return $posts;
+
+    }
+
+    /**
+     * Load the frontend template
+     *
+     * This function loads the specific template file from either your theme or child theme
+     * or falls back on the templates living in the /required-wp-top-content/templates folder.
+     *
+     * @param    string     $template   The template to be loaded (filename incl. extension)
+     * @param    WP_Post    $post       The WP_Post object to be used inside the template
+     * @since    1.0.0
+     */
+    private function load_template( $template, $post ) {
+
+        // Check if the template file exists in the theme forlder
+        if ( $overridden_template = locate_template( $template ) ) {
+            // Load the requested template file from the theme or child theme folder
+            $template_path = $overridden_template;
+
+        } else {
+            // Load the requested template file from the plugin folder
+            $template_path = dirname( __FILE__ ) . '/templates/'  . $template;
+
+        }
+
+        include( $template_path );
+
+    }
+
+    /**
+     * Renders the templates and contents
+     *
+     * @param    array      $post_types     Array of post types of the top contents
+     * @param    int        $count          The limit to display
+     * @param    string     $template       The template to load for each element
+     * @since    1.0.0
+     */
+    public function render_top_content( Array $post_types, $count, $template ) {
+
+        $top_content = $this->get_top_content( $post_types, $count );
+
+        if ( $top_content ) {
+
+            echo '<ul class="required-wp-top-content">';
+
+            foreach ( $top_content as $tc ) {
+
+                $this->load_template( $template, $tc );
+
+            }
+
+            echo '</ul>';
+
+        }
+
+    }
+
+    /**
+     * WP Top Content item classes
+     *
+     * Allows for ' ' seperated string and array as
+     * data input.
+     *
+     * @param    mixed      $classes    Array of classes to append to the defaults
+     * @return   string
+     * @since    1.0.0
+     */
+    public function item_classes( $classes ) {
+
+        $defaults = apply_filters(
+            'rplus_wp_top_content_default_classes',
+            array(
+                'wp-top-content-item'
+            )
+        );
+
+        if ( ! is_array( $classes ) )
+            $classes = explode( ' ', $classes );
+
+        $classes = apply_filters(
+            'rplus_wp_top_content_classes',
+            array_merge( $defaults, $classes )
+        );
+
+        $classes = array_map( 'esc_attr', $classes );
+
+        return join( ' ', $classes );
+    }
 
 }

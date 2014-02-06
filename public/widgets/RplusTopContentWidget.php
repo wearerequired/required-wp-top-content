@@ -21,14 +21,12 @@ class RplusTopContentWidget extends WP_Widget {
      */
     public function __construct() {
 
-        // TODO: update widget-name-id, classname and description
-        // TODO: replace 'widget-name-locale' to be named more plugin specific. Other instances exist throughout the code, too.
         parent::__construct(
             'required-top-content-widget',
-            __( 'r+ Top Content', 'required-wp-top-content' ),
+            __( 'r+ Top Content', 'rpluswptopcontent' ),
             array(
                 'classname'  => 'RplusTopContentWidget',
-                'description' => __( 'Display a list of top contents based on Google Analytics data.', 'required-wp-top-content' )
+                'description' => __( 'Display a list of top contents based on Google Analytics data.', 'rpluswptopcontent' )
             )
         );
 
@@ -50,12 +48,12 @@ class RplusTopContentWidget extends WP_Widget {
             'posttypes' => ''
         ) );
 
-        $this->_form_add_input('title', __('Title', 'required-wp-top-content'), $instance['title']);
-        $this->_form_add_input('count', __('Show Top x Contents', 'required-wp-top-content'), $instance['count'], 'small');
+        $this->_form_add_input('title', __('Title', 'rpluswptopcontent'), $instance['title']);
+        $this->_form_add_input('count', __('Show Top x Contents', 'rpluswptopcontent'), $instance['count'], 'small');
 
         ?>
         <p>
-            <?php _e( 'Show contents of this types', 'required-wp-top-content' ); ?><br>
+            <?php _e( 'Show contents of this types', 'rpluswptopcontent' ); ?><br>
             <?php
             foreach ( get_post_types( array( 'public' => true ) ) as $post_type ) {
                 $post_type_labels = get_post_type_labels( get_post_type_object( $post_type ) );
@@ -65,7 +63,6 @@ class RplusTopContentWidget extends WP_Widget {
                     <?php echo $post_type_labels->name; ?>
                 </label><br>
             <?php
-
             }
             ?>
         </p>
@@ -148,49 +145,14 @@ class RplusTopContentWidget extends WP_Widget {
         if ( ! empty( $title ) )
             echo $args['before_title'] . $title . $args['after_title'];
 
-        // query defined post types with synced analytics data.
-        $the_query = new WP_Query( array(
-            'post_type' => $instance['posttypes'],
-            'nopaging' => true,
-            'post_status' => 'publish',
-            'posts_per_page' => $instance['count'],
-            'orderby' => 'meta_value',
-            'order' => 'DESC',
-            'meta_key' => 'rplus_top_content_pageviews',
-            'meta_query' => array(
-                array(
-                    'key' => 'rplus_top_content_pageviews',
-                    'value' => 0,
-                    'compare' => '>'
-                )
-            )
-        ) );
+        echo apply_filters( 'rplus_wp_top_content_widget_list_start', '<ul class="rplus-top-content">' );
 
-        if ( $the_query->have_posts() ) {
+        rplus_wp_top_content( $instance['posttypes'], $instance['count'], 'rplus-wp-top-content-widget.php' );
 
-            echo '<ul class="required-wp-top-content">';
-
-            while ( $the_query->have_posts() ) { ?>
-                <?php $the_query->the_post(); ?>
-                <li>
-                    <a href="<?php the_permalink(); ?>">
-                        <?php the_title(); ?>
-                    </a>
-                </li>
-
-            <?php }
-
-            echo '</ul>';
-
-        } else {
-
-            echo '<p>'.__('No top contents.', 'required-wp-top-content').'</p>';
-
-        }
+        echo apply_filters( 'rplus_wp_top_content_widget_list_end', '</ul>' );
 
         echo $args['after_widget'];
 
-        wp_reset_query();
     }
 
 } // end class
