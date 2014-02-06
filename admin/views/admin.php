@@ -21,7 +21,7 @@
 
         settings_fields( 'required-wp-top-content-options' );
 
-        do_settings_sections( 'required-wp-top-content' );
+        do_settings_sections( 'rpluswptopcontent' );
 
         ?>
         <?php submit_button(); ?>

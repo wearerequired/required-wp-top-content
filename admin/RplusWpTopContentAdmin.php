@@ -103,7 +103,7 @@ class RplusWpTopContentAdmin {
     public function admin_edit_columns( $columns ) {
 
         if ( false !== RplusGoogleAnalytics::get_google_api_access_token() ) {
-            $columns['rplustopcontent'] = sprintf( __( 'Pageviews / Visits (last %d days)', 'required-wp-top-content' ), get_option( 'rplus_topcontent_options_sync_days' ) );
+            $columns['rplustopcontent'] = sprintf( __( 'Pageviews / Visits (last %d days)', 'rpluswptopcontent' ), get_option( 'rplus_topcontent_options_sync_days' ) );
         }
 
         return $columns;
@@ -203,8 +203,8 @@ class RplusWpTopContentAdmin {
 		 * Add a settings page for this plugin to the Settings menu.
 		 */
 		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'WP Top Content', 'required-wp-top-content' ),
-			__( 'WP Top Content', 'required-wp-top-content' ),
+			__( 'WP Top Content', 'rpluswptopcontent' ),
+			__( 'WP Top Content', 'rpluswptopcontent' ),
 			'manage_options',
 			$this->plugin_slug,
 			array( $this, 'display_plugin_admin_page' )
@@ -238,16 +238,16 @@ class RplusWpTopContentAdmin {
 
         add_settings_section(
             'rplus_topcontent_options_ga',
-            __( 'Google APIs', 'required-wp-top-content' ),
+            __( 'Google APIs', 'rpluswptopcontent' ),
             function() {
-                _e( 'Please fill in the data needed to access the Google APIs.', 'required-wp-top-content' );
+                _e( 'Please fill in the data needed to access the Google APIs.', 'rpluswptopcontent' );
             },
             $this->plugin_slug
         );
 
         add_settings_field(
             'rplus_topcontent_options_ga_client_id',
-            __( 'Client ID', 'required-wp-top-content' ),
+            __( 'Client ID', 'rpluswptopcontent' ),
             function() {
                 ?>
                 <input name="rplus_topcontent_options_ga_client_id" class="regular-text" type="text" id="rplus_topcontent_options_ga_client_id" value="<?php echo get_option( 'rplus_topcontent_options_ga_client_id' ); ?>">
@@ -259,7 +259,7 @@ class RplusWpTopContentAdmin {
 
         add_settings_field(
             'rplus_topcontent_options_ga_client_secret',
-            __( 'Client Secret', 'required-wp-top-content' ),
+            __( 'Client Secret', 'rpluswptopcontent' ),
             function() {
                 ?>
                 <input name="rplus_topcontent_options_ga_client_secret" class="regular-text" type="text" id="rplus_topcontent_options_ga_client_secret" value="<?php echo get_option( 'rplus_topcontent_options_ga_client_secret' ); ?>">
@@ -269,7 +269,7 @@ class RplusWpTopContentAdmin {
                             'If you don\'t already have a Client ID and/or Client Secret, go to the <a href="https://cloud.google.com/console" target="_blank">Google Developers Console</a>, '.
                             'create a new project or select a existing one, go to the <strong>APIs & auth > Credentials</strong> page and create a new Client ID. As <strong>Application type</strong>'.
                             'select <strong>Web application</strong>, fill in the correct domain name of your site (probably <strong>%s</strong>) and fill in the following as <strong>Authorized redirect URI</strong>: %s',
-                            'required-wp-top-content'
+                            'rpluswptopcontent'
                         ),
                         site_url(),
                         plugins_url( 'admin/includes/google_oauth_response.php', plugin_dir_path( __FILE__ ) )
@@ -283,11 +283,11 @@ class RplusWpTopContentAdmin {
 
         add_settings_field(
             'rplus_topcontent_options_ga_devkey',
-            __( 'Google API Server Key', 'required-wp-top-content' ),
+            __( 'Google API Server Key', 'rpluswptopcontent' ),
             function() {
                 ?>
                 <input name="rplus_topcontent_options_ga_devkey" class="regular-text" type="text" id="rplus_topcontent_options_ga_devkey" value="<?php echo get_option( 'rplus_topcontent_options_ga_devkey' ); ?>">
-                <p class="description"><?php _e( 'You need to create a Server Key on the <a href="https://cloud.google.com/console" target="_blank">Google Developers Console</a>.<br>To do this, create a new project (or select a existing one), activate the Analytics API inside <strong>APIs & auth</strong>, now go to <strong>APIs & auth > Credentials > Create new key > Server Key</strong> and create the Server key.', 'required-wp-top-content' ); ?></p>
+                <p class="description"><?php _e( 'You need to create a Server Key on the <a href="https://cloud.google.com/console" target="_blank">Google Developers Console</a>.<br>To do this, create a new project (or select a existing one), activate the Analytics API inside <strong>APIs & auth</strong>, now go to <strong>APIs & auth > Credentials > Create new key > Server Key</strong> and create the Server key.', 'rpluswptopcontent' ); ?></p>
             <?php
             },
             $this->plugin_slug,
@@ -296,7 +296,7 @@ class RplusWpTopContentAdmin {
 
         add_settings_field(
             'rplus_topcontent_options_ga_propertyid',
-            __( 'Analytics Property', 'required-wp-top-content' ),
+            __( 'Analytics Property', 'rpluswptopcontent' ),
             function() {
 
                 $access_token = RplusGoogleAnalytics::get_google_api_access_token();
@@ -306,7 +306,7 @@ class RplusWpTopContentAdmin {
                     $authurl = $client->createAuthUrl();
 
                     echo '<div class="error below-h2"><p>';
-                    printf( __( 'You have to authorize this plugin to access your Google Analytics data. <a href="%s" class="">Ok, go to authorization page &raquo;</a>', 'required-wp-top-content' ), $authurl );
+                    printf( __( 'You have to authorize this plugin to access your Google Analytics data. <a href="%s" class="">Ok, go to authorization page &raquo;</a>', 'rpluswptopcontent' ), $authurl );
                     echo '</p></div>';
 
                 } else {
@@ -318,13 +318,13 @@ class RplusWpTopContentAdmin {
                     $analytics = new Google_Service_Analytics( $client );
                     $accounts = RplusGoogleAnalytics::google_get_accounts( $analytics );
 
-                    _e( '<p class="description">Please select the correct Analytics Profile for your WordPress installation. The Tracking code you\'ve used on this WordPress installation should match with the one of this list.</p>', 'required-wp-top-content' );
+                    _e( '<p class="description">Please select the correct Analytics Profile for your WordPress installation. The Tracking code you\'ve used on this WordPress installation should match with the one of this list.</p>', 'rpluswptopcontent' );
 
                     ?>
                     <table class="widefat">
                         <tr>
-                            <td class="row-title"><?php _e( 'Account', 'required-wp-top-content' ); ?></td>
-                            <td class="row-title"><?php _e( 'Profile', 'required-wp-top-content' ); ?></td>
+                            <td class="row-title"><?php _e( 'Account', 'rpluswptopcontent' ); ?></td>
+                            <td class="row-title"><?php _e( 'Profile', 'rpluswptopcontent' ); ?></td>
                         </tr>
                     <?php
                     foreach ( $accounts as $a ) {
@@ -358,20 +358,20 @@ class RplusWpTopContentAdmin {
 
         add_settings_section(
             'rplus_topcontent_options_sync',
-            __( 'Synchronisation', 'required-wp-top-content' ),
+            __( 'Synchronisation', 'rpluswptopcontent' ),
             function() {
-                // _e( '', 'required-wp-top-content' );
+                // _e( '', 'rpluswptopcontent' );
             },
             $this->plugin_slug
         );
 
         add_settings_field(
             'rplus_topcontent_options_sync_days',
-            __( 'Time range', 'required-wp-top-content' ),
+            __( 'Time range', 'rpluswptopcontent' ),
             function() {
                 ?>
                 <input name="rplus_topcontent_options_sync_days" class="" type="text" id="rplus_topcontent_options_sync_days" value="<?php echo get_option( 'rplus_topcontent_options_sync_days' ); ?>" placeholder="30">
-                <p class="description"><?php _e( 'Sync google analytics data of the last X days. Default is 30 days.', 'required-wp-top-content' ); ?></p>
+                <p class="description"><?php _e( 'Sync google analytics data of the last X days. Default is 30 days.', 'rpluswptopcontent' ); ?></p>
             <?php
             },
             $this->plugin_slug,
@@ -380,7 +380,7 @@ class RplusWpTopContentAdmin {
 
         add_settings_field(
             'rplus_topcontent_options_sync_test',
-            __( 'Do synchronisation', 'required-wp-top-content' ),
+            __( 'Do synchronisation', 'rpluswptopcontent' ),
             function() {
                 $test = false;
                 if ( isset( $_GET['rplusdosync'] ) && $_GET['rplusdosync'] == 'now' ) {
@@ -389,7 +389,7 @@ class RplusWpTopContentAdmin {
 
                 } else {
 
-                    printf( __( '<a href="%s" class="button button-secondary">Start synchronisation now</a>', 'required-wp-top-content' ), admin_url( 'options-general.php?page=' . $this->plugin_slug . '&rplusdosync=now') );
+                    printf( __( '<a href="%s" class="button button-secondary">Start synchronisation now</a>', 'rpluswptopcontent' ), admin_url( 'options-general.php?page=' . $this->plugin_slug . '&rplusdosync=now') );
 
                 }
             },
@@ -408,7 +408,7 @@ class RplusWpTopContentAdmin {
 
 		return array_merge(
 			array(
-				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'required-wp-top-content' ) . '</a>'
+				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'rpluswptopcontent' ) . '</a>'
 			),
 			$links
 		);
@@ -444,7 +444,7 @@ class RplusWpTopContentAdmin {
     public function admin_notice_no_token() {
         ?>
         <div class="error">
-            <p><?php printf( __( 'required+ WordPress Top Content Plugin is not configured properly. Google Analytics API Token is missing. Please go to <a href="%s">settings page</a> to authorize this Plugin.', 'required-wp-top-content' ), admin_url( 'options-general.php?page=' . $this->plugin_slug ) ); ?></p>
+            <p><?php printf( __( 'required+ WordPress Top Content Plugin is not configured properly. Google Analytics API Token is missing. Please go to <a href="%s">settings page</a> to authorize this Plugin.', 'rpluswptopcontent' ), admin_url( 'options-general.php?page=' . $this->plugin_slug ) ); ?></p>
         </div>
         <?php
     }

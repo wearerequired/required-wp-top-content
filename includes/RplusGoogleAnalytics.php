@@ -155,7 +155,7 @@ class RplusGoogleAnalytics {
         if ( ! $access_token || empty( $access_token ) ) {
 
             /* debug */ if ( true === $debugoutput ) {
-                _e( '<div class="error below-h2"><p>Synchronisation error, no or invalid token!</p></div>', 'required-wp-top-content' );
+                _e( '<div class="error below-h2"><p>Synchronisation error, no or invalid token!</p></div>', 'rpluswptopcontent' );
             } /* /debug */
             return;
 
@@ -175,7 +175,7 @@ class RplusGoogleAnalytics {
         $to = date('Y-m-d');
 
         /* debug */ if ( true === $debugoutput ) {
-            printf( __( '<div class="update below-h2"><p>Starting synchronisation, fetching data from <strong>%s</strong> to <strong>%s</strong></p></div>', 'required-wp-top-content' ), $from, $to );
+            printf( __( '<div class="update below-h2"><p>Starting synchronisation, fetching data from <strong>%s</strong> to <strong>%s</strong></p></div>', 'rpluswptopcontent' ), $from, $to );
         } /* /debug */
 
         // remove existing pageviews for all contents
@@ -190,7 +190,7 @@ class RplusGoogleAnalytics {
         $pages = $data->getRows();
 
         /* debug */ if ( true === $debugoutput ) {
-            printf( __( '<div class="update below-h2"><p>Found %d pages to sync.</p></div>', 'required-wp-top-content' ), count( $pages ) );
+            printf( __( '<div class="update below-h2"><p>Found %d pages to sync.</p></div>', 'rpluswptopcontent' ), count( $pages ) );
         } /* /debug */
 
         if ( ! count( $pages ) ) {
@@ -200,7 +200,7 @@ class RplusGoogleAnalytics {
         }
 
         /* debug */ if ( $debugoutput ) {
-            echo '<table class="widefat"><tr><td class="row-title">'.__( 'URL', 'required-wp-top-content' ).'</td><td class="row-title">'.__( 'Pageviews / Visits', 'required-wp-top-content' ).'</td><td class="row-title">'.__( 'Related WordPress Post', 'required-wp-top-content' ).'</td></tr>';
+            echo '<table class="widefat"><tr><td class="row-title">'.__( 'URL', 'rpluswptopcontent' ).'</td><td class="row-title">'.__( 'Pageviews / Visits', 'rpluswptopcontent' ).'</td><td class="row-title">'.__( 'Related WordPress Post', 'rpluswptopcontent' ).'</td></tr>';
         } /* /debug */
 
         foreach ( $pages as $page ) {
@@ -209,7 +209,7 @@ class RplusGoogleAnalytics {
             $postid = url_to_postid( $url );
 
             /* debug */ if ( $debugoutput ) {
-                $wp_post = __( 'No related post/page found', 'required-wp-top-content' );
+                $wp_post = __( 'No related post/page found', 'rpluswptopcontent' );
                 if ( ! empty( $postid ) ) {
                     $wp_post = '<a href="'.site_url( $url ).'" target="_blank">'.get_the_title( $postid ).'</a>';
                 }
