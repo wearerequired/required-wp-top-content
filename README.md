@@ -29,7 +29,7 @@ The template function is named **rplus_wp_top_content** and will receive 3 optio
 ## Customisation
 ### Filters
 
-- **plus_wp_top_content_default_args** - change query args for top content list
+- **rplus_wp_top_content_default_args** - change query args for top content list
 - **rplus_wp_top_content_default_classes** - change default css class names of top content list entries
 - **rplus_wp_top_content_classes** - change css class names of top content list entries
 - **rplus_wp_top_content_widget_list_start** - change the list start element (by default the widget outputs a ul)
