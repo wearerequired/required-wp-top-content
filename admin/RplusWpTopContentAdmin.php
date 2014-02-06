@@ -62,12 +62,14 @@ class RplusWpTopContentAdmin {
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
+        // Work with OAuth response, when set.
         if ( isset( $_GET['google_oauth_response'] ) ) {
 
             self::google_authenticate( $_GET['google_oauth_response'] );
 
         }
 
+        // add admin notice in case we don't have a valid api token
         $access_token = RplusGoogleAnalytics::get_google_api_access_token();
         if ( ! $access_token || empty( $access_token ) ) {
             add_filter( 'admin_notices', array( $this, 'admin_notice_no_token' ) );
@@ -79,6 +81,8 @@ class RplusWpTopContentAdmin {
 
     /**
      * Add filters to selected post types to changes admin columns and content
+     *
+     * @since   1.0.0
      */
     private function change_admin_columns() {
 
@@ -97,8 +101,9 @@ class RplusWpTopContentAdmin {
     /**
      * WP-Admin Columns displayed for selected post types
      *
-     * @param  array    $columns    Array of default columns
-     * @return array    $columns    Modified array of columns
+     * @param   array    $columns    Array of default columns
+     * @return  array    $columns    Modified array of columns
+     * @since   1.0.0
      */
     public function admin_edit_columns( $columns ) {
 
@@ -113,9 +118,10 @@ class RplusWpTopContentAdmin {
     /**
      * WP-Admin Columns content displayed for selected post types
      *
-     * @param  string   $column     Name of the column defined in $this->admin_edit_columns();
-     * @param  int      $post_id    WP_Post ID
-     * @return string               Content for the columns
+     * @param   string   $column     Name of the column defined in $this->admin_edit_columns();
+     * @param   int      $post_id    WP_Post ID
+     * @return  string               Content for the columns
+     * @since   1.0.0
      */
     public function admin_manage_columns( $column, $post_id ) {
 
@@ -141,8 +147,8 @@ class RplusWpTopContentAdmin {
 	/**
 	 * Return an instance of this class.
 	 *
-	 * @since     1.0.0
 	 * @return    object    A single instance of this class.
+     * @since   1.0.0
 	 */
 	public static function get_instance() {
 
@@ -157,8 +163,8 @@ class RplusWpTopContentAdmin {
 	/**
 	 * Register and enqueue admin-specific style sheet.
 	 *
-	 * @since     1.0.0
 	 * @return    null    Return early if no settings page is registered.
+     * @since     1.0.0
 	 */
 	public function enqueue_admin_styles() {
 
@@ -176,8 +182,8 @@ class RplusWpTopContentAdmin {
 	/**
 	 * Register and enqueue admin-specific JavaScript.
 	 *
-	 * @since     1.0.0
 	 * @return    null    Return early if no settings page is registered.
+     * @since     1.0.0
 	 */
 	public function enqueue_admin_scripts() {
 
@@ -360,7 +366,7 @@ class RplusWpTopContentAdmin {
             'rplus_topcontent_options_sync',
             __( 'Synchronisation', 'rpluswptopcontent' ),
             function() {
-                // _e( '', 'rpluswptopcontent' );
+
             },
             $this->plugin_slug
         );
@@ -378,6 +384,9 @@ class RplusWpTopContentAdmin {
             'rplus_topcontent_options_sync'
         );
 
+        /*
+         * Displays a button, or starts synchronisation with debug output
+         */
         add_settings_field(
             'rplus_topcontent_options_sync_test',
             __( 'Do synchronisation', 'rpluswptopcontent' ),
@@ -418,7 +427,8 @@ class RplusWpTopContentAdmin {
     /**
      * Google OAuth response, authenticate and fetch access token
      *
-     * @param $code
+     * @param   $code
+     * @since   1.0.0
      */
     private static function google_authenticate( $code ) {
 
@@ -440,6 +450,8 @@ class RplusWpTopContentAdmin {
 
     /**
      * Display admin infos when no token exists
+     * 
+     * @since   1.0.0
      */
     public function admin_notice_no_token() {
         ?>
