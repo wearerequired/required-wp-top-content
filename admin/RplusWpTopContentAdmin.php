@@ -73,6 +73,69 @@ class RplusWpTopContentAdmin {
             add_filter( 'admin_notices', array( $this, 'admin_notice_no_token' ) );
         }
 
+        $this->change_admin_columns();
+
+    }
+
+    /**
+     * Add filters to selected post types to changes admin columns and content
+     */
+    private function change_admin_columns() {
+
+        foreach ( get_post_types( array( 'public' => true ) ) as $post_type ) {
+
+            // modify admin list columns
+            add_filter( "manage_edit-{$post_type}_columns", array( $this, 'admin_edit_columns' ) );
+
+            // fill custom columns
+            add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'admin_manage_columns' ), 10, 2 );
+
+        }
+
+    }
+
+    /**
+     * WP-Admin Columns displayed for selected post types
+     *
+     * @param  array    $columns    Array of default columns
+     * @return array    $columns    Modified array of columns
+     */
+    public function admin_edit_columns( $columns ) {
+
+        if ( false !== RplusGoogleAnalytics::get_google_api_access_token() ) {
+            $columns['rplustopcontent'] = sprintf( __( 'Pageviews / Visits (last %d days)', 'required-wp-top-content' ), get_option( 'rplus_topcontent_options_sync_days' ) );
+        }
+
+        return $columns;
+
+    }
+
+    /**
+     * WP-Admin Columns content displayed for selected post types
+     *
+     * @param  string   $column     Name of the column defined in $this->admin_edit_columns();
+     * @param  int      $post_id    WP_Post ID
+     * @return string               Content for the columns
+     */
+    public function admin_manage_columns( $column, $post_id ) {
+
+        switch ( $column ) {
+
+            // Display rating infos
+            case 'rplustopcontent':
+                $pageviews = get_post_meta( $post_id, 'rplus_top_content_pageviews', true );
+                $visits    = get_post_meta( $post_id, 'rplus_top_content_visits', true );
+
+                echo ( ! empty( $pageviews ) ) ? $pageviews : '-';
+                echo ' / ';
+                echo ( ! empty( $visits ) ) ? $visits : '-';
+                break;
+
+            // Don't show anything by default
+            default:
+                break;
+        }
+
     }
 
 	/**
