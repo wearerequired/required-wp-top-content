@@ -34,6 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Public-Facing Functionality
  *----------------------------------------------------------------------------*/
 
+require_once( plugin_dir_path( __FILE__ ) . 'includes/RplusGoogleAnalytics.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'public/RplusWpTopContent.php' );
 
 /*

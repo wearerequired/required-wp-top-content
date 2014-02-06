@@ -14,4 +14,6 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// TODO: remove analytics data that was already collected.
+// remove existing pageviews for all contents
+delete_post_meta_by_key( 'rplus_top_content_pageviews' );
+delete_post_meta_by_key( 'rplus_top_content_visits' );
