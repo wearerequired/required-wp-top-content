@@ -19,7 +19,7 @@
     <form method="post" action="options.php">
         <?php
 
-        settings_fields( 'required-wp-top-content-options' );
+        settings_fields( 'rpluswptopcontent-options' );
 
         do_settings_sections( 'rpluswptopcontent' );
 
