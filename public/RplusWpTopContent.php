@@ -61,6 +61,8 @@ class RplusWpTopContent {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
+        add_action( 'rplus_top_content_cron_hook', array( $this, 'sync_analytics_data' ) );
+
 	}
 
     /**
@@ -218,6 +220,8 @@ class RplusWpTopContent {
 	 */
 	private static function single_activate() {
 
+        wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'rplus_top_content_cron_hook' );
+
 	}
 
 	/**
@@ -226,6 +230,8 @@ class RplusWpTopContent {
 	 * @since    1.0.0
 	 */
 	private static function single_deactivate() {
+
+        wp_clear_scheduled_hook( 'rplus_top_content_cron_hook' );
 
 	}
 
@@ -386,6 +392,17 @@ class RplusWpTopContent {
         $classes = array_map( 'esc_attr', $classes );
 
         return join( ' ', $classes );
+    }
+
+    /**
+     * Synchronize Google Analytics data with posts & pages
+     */
+    public function sync_analytics_data() {
+
+        RplusGoogleAnalytics::google_sync_ga_data( true );
+
+        update_option( 'rplus_topcontent_options_sync_lastrun', date( 'Y-m-d H:i:s' ) );
+
     }
 
 }
