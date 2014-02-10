@@ -50,3 +50,6 @@ You can override this templates in your own theme, by simply placing the files i
 
 - **public/templates/rplus-wp-top-content.php**: Used to output a top content item for the shortcode or template function
 - **public/templates/rplus-wp-top-content-widget.php**: Used to output a top content item for the widget. By default, this should be a list element. The widget will surround the elements with a ul & /ul. To change that, see the different **filters**
+
+# required+
+[required+](http://required.ch) is a network of experienced web professionals from Switzerland and Germany. We focus on Interaction Design, Mobile Web, WordPress and some other things.
