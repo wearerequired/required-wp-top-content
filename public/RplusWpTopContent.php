@@ -63,6 +63,9 @@ class RplusWpTopContent {
 
         add_action( 'rplus_top_content_cron_hook', array( $this, 'sync_analytics_data' ) );
 
+        // add the shortcode
+        add_shortcode( 'rplus-topcontent', array( $this, 'shortcode' ) );
+
 	}
 
     /**
@@ -359,6 +362,38 @@ class RplusWpTopContent {
             echo '</ul>';
 
         }
+
+    }
+
+    /**
+     * Do shortcode and return the results
+     *
+     * @param $attr
+     * @param null $content
+     * @return string
+     */
+    public function shortcode( $attr, $content = null ) {
+
+        extract( shortcode_atts( array(
+            'count' => '5',
+            'posttypes' => 'post,page',
+            'template' => 'rplus-wp-top-content.php'
+        ), $attr ) );
+
+        // set default post types, when params are not valid
+        $post_types = explode( ',', $posttypes );
+        if ( ! is_array( $post_types ) || ! count( $post_types ) ) {
+            $post_types = array( 'post', 'page' );
+        }
+
+        ob_start();
+
+        $this->render_top_content( $post_types, $count, $template );
+
+        $out = ob_get_contents();
+        ob_clean();
+
+        return $out;
 
     }
 
