@@ -284,7 +284,7 @@ class RplusWpTopContent {
 
         $args = apply_filters( 'rplus_wp_top_content_default_args', array(
             'post_type' => $post_types,
-            'nopaging' => true,
+            'nopaging' => false,
             'post_status' => 'publish',
             'posts_per_page' => $count,
             'orderby' => 'meta_value',
