@@ -74,6 +74,9 @@ class RplusGoogleAnalytics {
         try {
 
             $client = self::get_google_api_client();
+            if ( false === $client )
+                return false;
+
             $client->setAccessToken( $access_token );
 
             if ( $client->isAccessTokenExpired() ) {

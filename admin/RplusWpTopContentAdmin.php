@@ -309,11 +309,21 @@ class RplusWpTopContentAdmin {
                 $client = RplusGoogleAnalytics::get_google_api_client();
                 if ( false === $access_token ) {
 
-                    $authurl = $client->createAuthUrl();
+                    if ( false === $client ) {
 
-                    echo '<div class="error below-h2"><p>';
-                    printf( __( 'You have to authorize this plugin to access your Google Analytics data. <a href="%s" class="">Ok, go to authorization page &raquo;</a>', 'rpluswptopcontent' ), $authurl );
-                    echo '</p></div>';
+                        echo '<div class="error below-h2"><p>';
+                        _e( 'Please fill in all option fields to proceed.', 'rpluswptopcontent' );
+                        echo '</p></div>';
+
+                    } else {
+
+                        $authurl = $client->createAuthUrl();
+
+                        echo '<div class="error below-h2"><p>';
+                        printf( __( 'You have to authorize this plugin to access your Google Analytics data. <a href="%s" class="">Ok, go to authorization page &raquo;</a>', 'rpluswptopcontent' ), $authurl );
+                        echo '</p></div>';
+
+                    }
 
                 } else {
 
