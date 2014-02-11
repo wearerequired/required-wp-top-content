@@ -241,4 +241,28 @@ class RplusGoogleAnalytics {
         } /* /debug */
     }
 
+    /**
+     * Remove all options of this plugin, to start fresh
+     *
+     * register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_client_id' );
+    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_client_secret' );
+    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_devkey' );
+    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_propertyid' );
+    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_sync_days' );
+     *
+     */
+    public static function google_reset_options() {
+
+
+        delete_option( 'rplus_topcontent_options_ga_client_id' );
+        delete_option( 'rplus_topcontent_options_ga_client_secret' );
+        delete_option( 'rplus_topcontent_options_ga_devkey' );
+        delete_option( 'rplus_topcontent_options_ga_propertyid' );
+        delete_option( 'rplus_topcontent_options_sync_days' );
+        delete_option( 'rplus_topcontent_options_ga_access_token' );
+        delete_option( 'rplus_topcontent_options_ga_propertyid' );
+        delete_option( 'rplus_topcontent_options_ga_access_code' );
+
+    }
+
 } 

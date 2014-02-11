@@ -416,6 +416,29 @@ class RplusWpTopContentAdmin {
             'rplus_topcontent_options_sync'
         );
 
+        /*
+         * Displays a button, to delete all saved data. For debugging reasons.
+         */
+        add_settings_field(
+            'rplus_topcontent_options_reset',
+            __( 'Remove all settings', 'rpluswptopcontent' ),
+            function() {
+
+                if ( isset( $_GET['rplusdoreset'] ) && $_GET['rplusdoreset'] == 'now' ) {
+
+                    RplusGoogleAnalytics::google_reset_options();
+                    _e( 'All settings removed, reload this page.', 'rpluswptopcontent' );
+
+                } else {
+
+                    printf( __( '<a href="%s" class="button button-secondary">Remove Settings</a>', 'rpluswptopcontent' ), admin_url( 'options-general.php?page=' . RplusWpTopContent::get_instance()->get_plugin_slug() . '&rplusdoreset=now') );
+
+                }
+            },
+            $this->plugin_slug,
+            'rplus_topcontent_options_sync'
+        );
+
     }
 
 	/**
