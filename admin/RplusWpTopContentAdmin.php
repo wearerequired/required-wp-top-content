@@ -408,7 +408,7 @@ class RplusWpTopContentAdmin {
 
                 } else {
 
-                    printf( __( '<a href="%s" class="button button-secondary">Start synchronisation now</a>', 'rpluswptopcontent' ), admin_url( 'options-general.php?page=' . $this->plugin_slug . '&rplusdosync=now') );
+                    printf( __( '<a href="%s" class="button button-secondary">Start synchronisation now</a>', 'rpluswptopcontent' ), admin_url( 'options-general.php?page=' . RplusWpTopContent::get_instance()->get_plugin_slug() . '&rplusdosync=now') );
 
                 }
             },
