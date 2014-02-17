@@ -10,6 +10,9 @@ A WordPress plugin to sync google anaytics data (pageviews & visits) with posts 
 # Installation
 After you've installed and activated the plugin please go to the plugin settings screen and fill in all needed fields. You'll find informations on how to get the Google API options for each setting.
 
+## PHP Config
+As this plugin uses the Google API PHP wrapper libraries, your Server needs to have **allow_url_fopen = 1** set.
+
 # This plugin offers
 Besides the synchronisation of Google Analytics data you'll get a widget/shortcode/function to display/list the top contents of your blog.
 
