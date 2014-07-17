@@ -17,3 +17,11 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 // remove existing pageviews for all contents
 delete_post_meta_by_key( 'rplus_top_content_pageviews' );
 delete_post_meta_by_key( 'rplus_top_content_visits' );
+
+// remove options
+delete_option( 'rplus_topcontent_options_ga_access_token' );
+delete_option( 'rplus_topcontent_options_sync_days' );
+delete_option( 'rplus_topcontent_options_ga_propertyid' );
+delete_option( 'rplus_topcontent_options_ga_devkey' );
+delete_option( 'rplus_topcontent_options_ga_client_id' );
+delete_option( 'rplus_topcontent_options_ga_client_secret' );
