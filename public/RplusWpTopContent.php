@@ -315,7 +315,7 @@ class RplusWpTopContent {
         // query defined post types with synced analytics data.
         $the_query = new WP_Query( $args );
 
-        $posts = empty( $the_query->found_posts ) ? false : $the_query->get_posts();
+        $posts = empty( $the_query->found_posts ) ? false : $the_query->posts;
 
         wp_reset_query();
 
