@@ -45,7 +45,8 @@ class RplusTopContentWidget extends WP_Widget {
         $instance = wp_parse_args( (array) $instance, array(
             'title' => '',
             'count' => '',
-            'posttypes' => ''
+            'posttypes' => '',
+			'categories' => array()
         ) );
 
         $this->_form_add_input('title', __('Title', 'rpluswptopcontent'), $instance['title']);
@@ -66,7 +67,19 @@ class RplusTopContentWidget extends WP_Widget {
             }
             ?>
         </p>
-    <?php
+		<?php
+		$categories = get_terms( 'category' );
+		if ( count( $categories ) ) :
+		?>
+		<p>
+			<?php _e( 'When showing Posts, you can filter by category (multiple possible).', 'rpluswptopcontent' ); ?>
+			<select class="widefat" name="<?php echo $this->get_field_name('categories'); ?>[]" multiple>
+				<?php foreach ( $categories as $c ) : ?>
+					<option value="<?php echo $c->term_id; ?>" <?php if ( in_array( $c->term_id, $instance['categories'] ) ) : ?>selected="selected"<?php endif; ?>><?php echo $c->name . ' (' . $c->slug . ')'; ?></option>
+				<?php endforeach; ?>
+			</select>
+		</p>
+    <?php endif;
 
     }
 
@@ -118,6 +131,7 @@ class RplusTopContentWidget extends WP_Widget {
         $instance['count'] = ( ! empty( $new_instance['count'] ) && is_numeric( $new_instance['count'] ) ) ? $new_instance['count'] : '';
 
         $instance['posttypes'] = ( is_array( $new_instance['posttypes'] ) ) ? $new_instance['posttypes'] : array();
+		$instance['categories'] = ( is_array( $new_instance['categories'] ) ) ? $new_instance['categories'] : array();
 
         return $instance;
     }
@@ -140,6 +154,21 @@ class RplusTopContentWidget extends WP_Widget {
 
         $title = apply_filters( 'widget_title', $instance['title'] );
 
+		$query = array();
+		if ( isset( $instance['categories'] ) && count( $instance['categories'] ) ) {
+
+			$query = array(
+				'tax_query' => array(
+					array(
+						'taxonomy' => 'category',
+						'field' => 'id',
+						'terms' => $instance['categories']
+					)
+				)
+			);
+
+		}
+
         echo $args['before_widget'];
 
         if ( ! empty( $title ) )
@@ -147,7 +176,7 @@ class RplusTopContentWidget extends WP_Widget {
 
         echo apply_filters( 'rplus_wp_top_content_widget_list_start', '<ul class="rplus-top-content">' );
 
-        rplus_wp_top_content( $instance['posttypes'], $instance['count'], 'rplus-wp-top-content-widget.php' );
+        rplus_wp_top_content( $instance['posttypes'], $instance['count'], 'rplus-wp-top-content-widget.php', $query );
 
         echo apply_filters( 'rplus_wp_top_content_widget_list_end', '</ul>' );
 
