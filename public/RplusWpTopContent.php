@@ -277,12 +277,13 @@ class RplusWpTopContent {
      *
      * @param    array      $post_types     Array of post types to get top contents from
      * @param    int        $count          Limit of contents to fetch
+	 * @param	 array		$query_args		Optional query parameters
      * @return   array|bool
      * @since    1.0.0
      */
-    private function get_top_content( Array $post_types, $count ) {
+    private function get_top_content( Array $post_types, $count, $query_args ) {
 
-        $args = apply_filters( 'rplus_wp_top_content_default_args', array(
+        $args = apply_filters( 'rplus_wp_top_content_default_args', wp_parse_args( $query_args, array(
             'post_type' => $post_types,
             'nopaging' => false,
             'post_status' => 'publish',
@@ -297,7 +298,7 @@ class RplusWpTopContent {
                     'compare' => '>'
                 )
             )
-        ) );
+        ) ) );
 
         // query defined post types with synced analytics data.
         $the_query = new WP_Query( $args );
@@ -343,11 +344,12 @@ class RplusWpTopContent {
      * @param    array      $post_types     Array of post types of the top contents
      * @param    int        $count          The limit to display
      * @param    string     $template       The template to load for each element
+	 * @param	 array		$query_args		Optional query arguments for wp_query
      * @since    1.0.0
      */
-    public function render_top_content( Array $post_types, $count, $template ) {
+    public function render_top_content( Array $post_types, $count, $template, $query_args ) {
 
-        $top_content = $this->get_top_content( $post_types, $count );
+        $top_content = $this->get_top_content( $post_types, $count, $query_args );
 
         if ( $top_content ) {
 
