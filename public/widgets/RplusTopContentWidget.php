@@ -161,7 +161,7 @@ class RplusTopContentWidget extends WP_Widget {
 				'tax_query' => array(
 					array(
 						'taxonomy' => 'category',
-						'field' => 'id',
+						'field' => 'term_id',
 						'terms' => $instance['categories']
 					)
 				)

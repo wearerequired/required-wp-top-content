@@ -206,10 +206,15 @@ class RplusGoogleAnalytics {
             echo '<table class="widefat"><tr><td class="row-title">'.__( 'URL', 'rpluswptopcontent' ).'</td><td class="row-title">'.__( 'Pageviews / Visits', 'rpluswptopcontent' ).'</td><td class="row-title">'.__( 'Related WordPress Post', 'rpluswptopcontent' ).'</td></tr>';
         } /* /debug */
 
+		$updated_posts = array();
+
         foreach ( $pages as $page ) {
 
             $url = rtrim ( $page[0], '/' );
             $postid = url_to_postid( $url );
+
+			// save for later updating all except this ones
+			$updated_posts[] = $postid;
 
             /* debug */ if ( $debugoutput ) {
                 $wp_post = __( 'No related post/page found', 'rpluswptopcontent' );
@@ -236,20 +241,39 @@ class RplusGoogleAnalytics {
 
         }
 
-        /* debug */ if ( $debugoutput ) {
+		/**
+		 * - Get all post ids that where not updated with google analytics data
+		 * - remove the meta key/values
+		 * - add meta keys with value 0 (needed cause of some wp_query which will order by that etc.)
+		 */
+		global $wpdb;
+		$results = $wpdb->get_results( "SELECT ID FROM {$wpdb->posts} WHERE post_status IN ('publish', 'ueberpruefung') AND post_type = 'post' AND ID NOT IN (" . implode( ',', $updated_posts ) . ")" );
+		$post_ids = array();
+		foreach ( $results as $r ) {
+			$post_ids[] = $r->ID;
+
+			$wpdb->replace( $wpdb->postmeta, array(
+				'post_id' => $r->ID,
+				'meta_key' => 'rplus_top_content_pageviews',
+				'meta_value' => '0'
+			), array( '%d', '%s', '%d' ) );
+
+			$wpdb->replace( $wpdb->postmeta, array(
+				'post_id' => $r->ID,
+				'meta_key' => 'rplus_top_content_visits',
+				'meta_value' => '0'
+			), array( '%d', '%s', '%d' ) );
+
+		}
+
+		/* debug */ if ( $debugoutput ) {
             echo '</table>';
         } /* /debug */
+
     }
 
     /**
      * Remove all options of this plugin, to start fresh
-     *
-     * register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_client_id' );
-    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_client_secret' );
-    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_devkey' );
-    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_ga_propertyid' );
-    register_setting( $this->plugin_slug . '-options', 'rplus_topcontent_options_sync_days' );
-     *
      */
     public static function google_reset_options() {
 
