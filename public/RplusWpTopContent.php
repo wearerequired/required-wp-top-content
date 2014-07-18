@@ -302,14 +302,7 @@ class RplusWpTopContent {
             'posts_per_page' => $count,
             'orderby' => 'meta_value',
             'order' => 'DESC',
-            'meta_key' => 'rplus_top_content_pageviews',
-            'meta_query' => array(
-                array(
-                    'key' => 'rplus_top_content_pageviews',
-                    'value' => 0,
-                    'compare' => '>'
-                )
-            )
+            'meta_key' => 'rplus_top_content_pageviews'
         ) ) );
 
         // query defined post types with synced analytics data.
@@ -402,7 +395,7 @@ class RplusWpTopContent {
 
         ob_start();
 
-        $this->render_top_content( $post_types, $count, $template );
+        $this->render_top_content( $post_types, $count, $template, array() );
 
         $out = ob_get_contents();
         ob_clean();
