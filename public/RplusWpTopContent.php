@@ -358,7 +358,7 @@ class RplusWpTopContent {
 
         if ( $top_content ) {
 
-            echo '<ul class="required-wp-top-content">';
+            //echo '<ul class="required-wp-top-content">';
 
             foreach ( $top_content as $tc ) {
 
@@ -366,7 +366,7 @@ class RplusWpTopContent {
 
             }
 
-            echo '</ul>';
+            //echo '</ul>';
 
         }
 
