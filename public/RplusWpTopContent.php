@@ -300,7 +300,8 @@ class RplusWpTopContent {
             'nopaging' => false,
             'post_status' => 'publish',
             'posts_per_page' => $count,
-            'orderby' => 'meta_value',
+            'orderby' => 'meta_value_num',
+	        'meta_type' => 'NUMERIC',
             'order' => 'DESC',
             'meta_key' => 'rplus_top_content_pageviews'
         ) ) );
