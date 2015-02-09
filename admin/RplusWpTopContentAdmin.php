@@ -77,6 +77,11 @@ class RplusWpTopContentAdmin {
 
         $this->change_admin_columns();
 
+		// Filter posts for custom column sorting
+		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+
+		add_filter('get_meta_sql', array( $this, 'change_columns_order_sql' ) );
+
     }
 
     /**
@@ -93,6 +98,8 @@ class RplusWpTopContentAdmin {
 
             // fill custom columns
             add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'admin_manage_columns' ), 10, 2 );
+
+	        add_filter( "manage_edit-{$post_type}_sortable_columns", array( $this, 'admin_sortable_columns' ) );
 
         }
 
@@ -143,6 +150,56 @@ class RplusWpTopContentAdmin {
         }
 
     }
+
+	/**
+	 * Filter the sortable columns.
+	 *
+	 * @param array $columns The columns that can be filtered.
+	 *
+	 * @return array
+	 */
+	public function admin_sortable_columns( $columns ) {
+		$columns['rplustopcontent'] = 'rplustopcontent';
+
+		return $columns;
+	}
+
+	/**
+	 * Modify the query for the custom sorting.
+	 *
+	 * @param WP_Query $query
+	 */
+	public function pre_get_posts( $query ) {
+		if( ! is_admin() )
+			return;
+
+		$orderby = $query->get( 'orderby');
+
+		if( 'rplustopcontent' === $orderby ) {
+			$query->set('meta_key','rplus_top_content_pageviews');
+			$query->set('orderby','meta_value_num');
+		}
+	}
+
+	/**
+	 * Filter the SQL clauses for the column sorting to include posts
+	 * without any ratings.
+	 *
+	 * @param array $clauses The SQL clauses
+	 *
+	 * @return array
+	 */
+	public function change_columns_order_sql( $clauses ) {
+		global $wp_query;
+
+		if ( 'rplus_top_content_pageviews' === $wp_query->get( 'meta_key' ) && 'meta_value_num' === $wp_query->get( 'orderby' ) ) {
+			// Left Join so empty values will be returned as well
+			$clauses['join'] = str_replace( 'INNER JOIN', 'LEFT JOIN', $clauses['join'] ) . $clauses['where'];
+			$clauses['where'] = '';
+		}
+
+		return $clauses;
+	}
 
 	/**
 	 * Return an instance of this class.
