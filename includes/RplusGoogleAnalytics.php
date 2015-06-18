@@ -35,14 +35,25 @@ class RplusGoogleAnalytics {
             return false;
         }
 
-        // Google API Library path
-        $lib_dir = plugin_dir_path( __DIR__ ) . 'includes' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'google-api' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+        // check if we're configured with composer
+        $composer_autoloader = plugin_dir_path( __DIR__ ) . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+        if ( file_exists( $composer_autoloader ) ) {
 
-        // update include path
-        set_include_path( get_include_path() . PATH_SEPARATOR . $lib_dir );
+            require_once $composer_autoloader;
 
-        require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'Client.php';
-        require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . 'Analytics.php';
+        } else {
+
+            // Google API Library path
+            $lib_dir = plugin_dir_path( __DIR__ ) . 'includes' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'google-api' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+
+            // update include path
+            set_include_path( get_include_path() . PATH_SEPARATOR . $lib_dir );
+
+            require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'Client.php';
+            require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . 'Analytics.php';
+
+        }
+
         $client = new Google_Client();
         $client->setApplicationName( "WordPress Plugin - required-wp-top-content" );
         $client->setDeveloperKey( $apikey );
