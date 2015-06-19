@@ -36,7 +36,7 @@ class RplusGoogleAnalytics {
         }
 
         // check if we're configured with composer
-        $composer_autoloader = plugin_dir_path( __DIR__ ) . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+        $composer_autoloader = plugin_dir_path( __DIR__ ) . 'vendor' . DIRECTORY_SEPARATOR . 'google' . DIRECTORY_SEPARATOR . 'google-api-php-client' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Google' . DIRECTORY_SEPARATOR . 'autoload.php';
         if ( file_exists( $composer_autoloader ) ) {
 
             require_once $composer_autoloader;
