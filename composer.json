@@ -13,13 +13,13 @@
     }
   ],
   "require": {
-    "google/google-api-php-client": "~1.1"
+    "google/apiclient": "~1.1"
   },
   "repositories" : [
     {
       "type": "package",
       "package": {
-        "name": "google/google-api-php-client",
+        "name": "google/apiclient",
         "version": "1.1.4",
         "source": {
           "url": "git@github.com:google/google-api-php-client.git",
