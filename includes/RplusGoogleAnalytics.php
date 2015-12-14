@@ -61,7 +61,7 @@ class RplusGoogleAnalytics {
         $client->setClientSecret( $clientsecret );
         $client->setScopes( 'https://www.googleapis.com/auth/analytics.readonly' );
         $client->setAccessType( 'offline' );
-        $client->setRedirectUri( plugins_url( 'admin/includes/google_oauth_response.php', plugin_dir_path( __FILE__ ) ) );
+        $client->setRedirectUri( admin_url( 'options-general.php?page='.str_replace( '/admin', '', plugin_basename( plugin_dir_path( __DIR__ ) ) ) ) );
 
         return $client;
 

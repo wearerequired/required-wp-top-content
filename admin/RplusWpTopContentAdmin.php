@@ -335,7 +335,7 @@ class RplusWpTopContentAdmin {
                             'rpluswptopcontent'
                         ),
                         site_url(),
-                        plugins_url( 'admin/includes/google_oauth_response.php', plugin_dir_path( __FILE__ ) )
+                        admin_url( 'options-general.php?page='.str_replace( '/admin', '', plugin_basename( plugin_dir_path( __DIR__ ) ) ) )
                     ); ?>
                 </p>
                 <?php
