@@ -63,9 +63,9 @@ class RplusWpTopContentAdmin {
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
         // Work with OAuth response, when set.
-        if ( isset( $_GET['google_oauth_response'] ) ) {
+        if ( isset( $_GET['code'] ) ) {
 
-            self::google_authenticate( $_GET['google_oauth_response'] );
+            self::google_authenticate( $_GET['code'] );
 
         }
 
