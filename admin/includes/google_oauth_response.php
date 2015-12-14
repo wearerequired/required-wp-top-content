@@ -13,7 +13,6 @@ $path = $_SERVER['DOCUMENT_ROOT'];
 
 include_once $path . '/wp-config.php';
 include_once $path . '/wp-load.php';
-include_once $path . '/wp-includes/pluggable.php';
 
 $code = '';
 if ( isset( $_GET['code'] ) ) {
