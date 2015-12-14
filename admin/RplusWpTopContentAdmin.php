@@ -335,7 +335,7 @@ class RplusWpTopContentAdmin {
                             'rpluswptopcontent'
                         ),
                         site_url(),
-                        admin_url( 'options-general.php?page='.str_replace( '/admin', '', plugin_basename( plugin_dir_path( __DIR__ ) ) ) )
+                        esc_url( add_query_arg( 'page', RplusWpTopContent::get_instance()->get_plugin_slug(), admin_url( 'options-general.php' ) ) )
                     ); ?>
                 </p>
                 <?php
