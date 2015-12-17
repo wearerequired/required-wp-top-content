@@ -230,7 +230,7 @@ class RplusGoogleAnalytics {
             /* debug */ if ( $debugoutput ) {
                 $wp_post = __( 'No related post/page found', 'rpluswptopcontent' );
                 if ( ! empty( $postid ) ) {
-                    $wp_post = '<a href="'.site_url( $url ).'" target="_blank">'.get_the_title( $postid ).'</a> | ID: <a href="'.get_edit_post_link( $postid ).' title="Beitrag bearbeiten"><code>'.esc_attr( $postid ).'</code></a>';
+                    $wp_post = '<a href="'.site_url( $url ).'" target="_blank">'.get_the_title( $postid ).'</a> | ID: <a href="'.get_edit_post_link( $postid ).'" title="Beitrag bearbeiten"><code>'.esc_attr( $postid ).'</code></a>';
                 }
                 echo  '<tr>'
                     .'<td valign="top" style="vertical-align: top;">'.$page[0].'</td>'
