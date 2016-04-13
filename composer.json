@@ -12,6 +12,9 @@
       "role": "Developer"
     }
   ],
+  "config": {
+    "vendor-dir": "vendor"
+  },
   "require": {
     "google/apiclient": "~1.1"
   },
