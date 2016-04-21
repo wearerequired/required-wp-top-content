@@ -44,7 +44,7 @@ class RplusGoogleAnalytics {
         } else {
 
             // Google API Library path
-            $lib_dir = plugin_dir_path( __DIR__ ) . implode( DIRECTORY_SEPARATOR, array( 'includes', 'vendor', 'google-api', 'src' ) ) . DIRECTORY_SEPARATOR;
+            $lib_dir = plugin_dir_path( __DIR__ ) . implode( DIRECTORY_SEPARATOR, array( 'includes', 'google-api', 'src' ) ) . DIRECTORY_SEPARATOR;
 
             // update include path
             set_include_path( get_include_path() . PATH_SEPARATOR . $lib_dir );
