@@ -13,7 +13,7 @@
     }
   ],
   "config": {
-    "vendor-dir": "vendor"
+    "vendor-dir": "./includes/vendor"
   },
   "require": {
     "google/apiclient": "~1.1"
