@@ -49,8 +49,7 @@ class RplusGoogleAnalytics {
             // update include path
             set_include_path( get_include_path() . PATH_SEPARATOR . $lib_dir );
 
-            require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'Client.php';
-            require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . 'Analytics.php';
+            require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'autoload.php';
 
         }
 
