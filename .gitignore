@@ -1,4 +1,5 @@
 # IDE meta files
 .idea
 composer.lock
-vendor/
+!includes/vendor/google-api
+includes/vendor

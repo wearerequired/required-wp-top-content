@@ -36,7 +36,7 @@ class RplusGoogleAnalytics {
         }
 
         // check if we're configured with composer
-        $composer_autoloader = plugin_dir_path( __DIR__ ) . 'vendor' . DIRECTORY_SEPARATOR . 'google' . DIRECTORY_SEPARATOR . 'google-api-php-client' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Google' . DIRECTORY_SEPARATOR . 'autoload.php';
+        $composer_autoloader = plugin_dir_path( __DIR__ ) . implode( DIRECTORY_SEPARATOR, array( 'includes', 'vendor', 'google', 'apiclient', 'src', 'Google', 'autoload.php' ) );
         if ( file_exists( $composer_autoloader ) ) {
 
             require_once $composer_autoloader;
@@ -44,7 +44,7 @@ class RplusGoogleAnalytics {
         } else {
 
             // Google API Library path
-            $lib_dir = plugin_dir_path( __DIR__ ) . 'includes' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'google-api' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+            $lib_dir = plugin_dir_path( __DIR__ ) . implode( DIRECTORY_SEPARATOR, array( 'includes', 'vendor', 'google-api', 'src' ) ) . DIRECTORY_SEPARATOR;
 
             // update include path
             set_include_path( get_include_path() . PATH_SEPARATOR . $lib_dir );
