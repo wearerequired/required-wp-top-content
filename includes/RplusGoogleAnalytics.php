@@ -35,23 +35,13 @@ class RplusGoogleAnalytics {
             return false;
         }
 
-        // check if we're configured with composer
-        $composer_autoloader = plugin_dir_path( __DIR__ ) . implode( DIRECTORY_SEPARATOR, array( 'includes', 'vendor', 'google', 'apiclient', 'src', 'Google', 'autoload.php' ) );
-        if ( file_exists( $composer_autoloader ) ) {
+        // Google API Library path
+        $lib_dir = plugin_dir_path( __DIR__ ) . implode( DIRECTORY_SEPARATOR, array( 'includes', 'google-api', 'src' ) ) . DIRECTORY_SEPARATOR;
 
-            require_once $composer_autoloader;
+        // update include path
+        set_include_path( get_include_path() . PATH_SEPARATOR . $lib_dir );
 
-        } else {
-
-            // Google API Library path
-            $lib_dir = plugin_dir_path( __DIR__ ) . implode( DIRECTORY_SEPARATOR, array( 'includes', 'google-api', 'src' ) ) . DIRECTORY_SEPARATOR;
-
-            // update include path
-            set_include_path( get_include_path() . PATH_SEPARATOR . $lib_dir );
-
-            require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'autoload.php';
-
-        }
+        require_once $lib_dir . 'Google' . DIRECTORY_SEPARATOR . 'autoload.php';
 
         $client = new Google_Client();
         $client->setApplicationName( "WordPress Plugin - required-wp-top-content" );
