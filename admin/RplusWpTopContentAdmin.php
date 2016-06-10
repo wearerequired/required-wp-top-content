@@ -82,7 +82,77 @@ class RplusWpTopContentAdmin {
 
 		add_filter('get_meta_sql', array( $this, 'change_columns_order_sql' ) );
 
+		// Exclude posts.
+		add_action( 'add_meta_boxes_post', array( $this, 'add_meta_boxes' ) );
+		add_action( 'save_post', array( $this, 'save_exclude_posts' ), 10, 3 );
+
     }
+
+	/**
+	 * Add meta boxes.
+     */
+    public function add_meta_boxes() {
+        add_meta_box(
+            'rpluswptopcontent',
+            __( 'Top Content', 'rpluswptopcontent' ),
+            array( $this, 'metabox_content_exclude_posts' ),
+            'post',
+            'side'
+        );
+    }
+
+    /**
+	 * Display the metabox content
+     */
+    public function metabox_content_exclude_posts( $post ) {
+
+		wp_nonce_field( basename(__FILE__), "rpluswptopcontentexcludenonce" );
+		$checkbox_value = get_post_meta( $post->ID, "_topcontent_exclude", true);
+        ?>
+        <div>
+            <label>
+                <input type="hidden" name="rpluswptopcontent" value="no">
+                <input name="rpluswptopcontentexclude" type="checkbox" value="yes" id="rpluswptopcontentexclude" <?php echo checked( 'yes', $checkbox_value ); ?>>
+                <?php _e( 'Exclude this post from top content lists', 'rpluswptopcontent' ); ?>
+            </label>
+       </div>
+        <?php
+
+    }
+
+    /**
+     * Save the custom fields from meta boxes
+     *
+     * @param $post_id
+     * @param $post
+     * @param $update
+     *
+     * @return mixed
+	 */
+    public function save_exclude_posts( $post_id, $post, $update ) {
+
+	    if ( ! isset( $_POST["rpluswptopcontentexcludenonce"] ) || ! wp_verify_nonce( $_POST["rpluswptopcontentexcludenonce"], basename( __FILE__ ) ) )
+	        return $post_id;
+
+	    if ( ! current_user_can( "edit_post", $post_id ) )
+	        return $post_id;
+
+	    if ( defined( "DOING_AUTOSAVE" ) && DOING_AUTOSAVE )
+	        return $post_id;
+
+	    $slug = "post";
+	    if ( $slug != $post->post_type )
+	        return $post_id;
+
+        $exclude = '';
+	    if ( isset( $_POST["rpluswptopcontentexclude"] ) ) {
+	        $exclude = $_POST["rpluswptopcontentexclude"];
+	    }
+
+	    update_post_meta( $post_id, "_topcontent_exclude", $exclude );
+
+	}
+
 
     /**
      * Add filters to selected post types to changes admin columns and content
