@@ -307,12 +307,12 @@ class RplusWpTopContent {
 	        'meta_query' => array(
 		        'relation' => 'OR',
 		        array(
-			        'key' => '_topcontent_exclude',
+			        'key' => 'topcontent_exclude',
 			        'value' => 'yes',
 			        'compare' => '!=',
 		        ),
 		        array(
-			        'key' => '_topcontent_exclude',
+			        'key' => 'topcontent_exclude',
 			        'compare' => 'NOT EXISTS',
 		        ),
 	        ),

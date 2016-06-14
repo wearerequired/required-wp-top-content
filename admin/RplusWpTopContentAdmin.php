@@ -42,7 +42,7 @@ class RplusWpTopContentAdmin {
 	 */
 	private function __construct() {
 
-		/*
+		/**
 		 * Call $plugin_slug from public plugin class.
 		 */
 		$plugin = RplusWpTopContent::get_instance();
@@ -77,16 +77,35 @@ class RplusWpTopContentAdmin {
 
         $this->change_admin_columns();
 
-		// Filter posts for custom column sorting
+		// Filter posts for custom column sorting.
 		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 
-		add_filter('get_meta_sql', array( $this, 'change_columns_order_sql' ) );
+		add_filter( 'get_meta_sql', array( $this, 'change_columns_order_sql' ) );
 
 		// Exclude posts.
 		add_action( 'add_meta_boxes_post', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_exclude_posts' ), 10, 3 );
 
+		// Register the exclude meta.
+		register_meta( 'post', 'topcontent_exclude', array( $this, 'sanitize_meta_topcontent_exclude' ), '__return_false' );
+
     }
+
+    /**
+     * Sanitize the exclude post meta value.
+     *
+     * @param $exclude
+     * @return string
+     */
+	public function sanitize_meta_topcontent_exclude( $exclude ) {
+
+		if ( in_array( $exclude, array( 'yes', 'no' ) ) ) {
+			return $exclude;
+		}
+
+		// The submitted value is not valid, set default option to 'no'.
+		return 'no';
+	}
 
 	/**
 	 * Add meta boxes.
@@ -107,7 +126,7 @@ class RplusWpTopContentAdmin {
     public function metabox_content_exclude_posts( $post ) {
 
 		wp_nonce_field( basename(__FILE__), "rpluswptopcontentexcludenonce" );
-		$checkbox_value = get_post_meta( $post->ID, "_topcontent_exclude", true);
+		$checkbox_value = get_post_meta( $post->ID, "topcontent_exclude", true);
         ?>
         <div>
             <label>
@@ -121,7 +140,7 @@ class RplusWpTopContentAdmin {
     }
 
     /**
-     * Save the custom fields from meta boxes
+     * Save the custom fields from meta boxes.
      *
      * @param $post_id
      * @param $post
@@ -131,25 +150,29 @@ class RplusWpTopContentAdmin {
 	 */
     public function save_exclude_posts( $post_id, $post, $update ) {
 
-	    if ( ! isset( $_POST["rpluswptopcontentexcludenonce"] ) || ! wp_verify_nonce( $_POST["rpluswptopcontentexcludenonce"], basename( __FILE__ ) ) )
+	    if ( ! isset( $_POST['rpluswptopcontentexcludenonce'] ) || ! wp_verify_nonce( $_POST['rpluswptopcontentexcludenonce'], basename( __FILE__ ) ) ) {
 	        return $post_id;
-
-	    if ( ! current_user_can( "edit_post", $post_id ) )
-	        return $post_id;
-
-	    if ( defined( "DOING_AUTOSAVE" ) && DOING_AUTOSAVE )
-	        return $post_id;
-
-	    $slug = "post";
-	    if ( $slug != $post->post_type )
-	        return $post_id;
-
-        $exclude = '';
-	    if ( isset( $_POST["rpluswptopcontentexclude"] ) ) {
-	        $exclude = $_POST["rpluswptopcontentexclude"];
 	    }
 
-	    update_post_meta( $post_id, "_topcontent_exclude", $exclude );
+	    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+	        return $post_id;
+	    }
+
+	    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+	        return $post_id;
+	    }
+
+	    $slug = 'post';
+	    if ( $slug != $post->post_type ) {
+	        return $post_id;
+	    }
+
+        $exclude = '';
+	    if ( isset( $_POST['rpluswptopcontentexclude'] ) ) {
+	        $exclude = $_POST['rpluswptopcontentexclude'];
+	    }
+
+	    update_post_meta( $post_id, 'topcontent_exclude', $exclude );
 
 	}
 
