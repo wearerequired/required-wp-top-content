@@ -18,49 +18,49 @@
  */
 class RplusWpTopContentAdmin {
 
-	/**
-	 * Instance of this class.
-	 *
-	 * @since    1.0.0
-	 * @var      object
-	 */
-	protected static $instance = null;
+    /**
+     * Instance of this class.
+     *
+     * @since    1.0.0
+     * @var      object
+     */
+    protected static $instance = null;
 
-	/**
-	 * Slug of the plugin screen.
-	 *
-	 * @since    1.0.0
-	 * @var      string
-	 */
-	protected $plugin_screen_hook_suffix = null;
+    /**
+     * Slug of the plugin screen.
+     *
+     * @since    1.0.0
+     * @var      string
+     */
+    protected $plugin_screen_hook_suffix = null;
 
-	/**
-	 * Initialize the plugin by loading admin scripts & styles and adding a
-	 * settings page and menu.
-	 *
-	 * @since     1.0.0
-	 */
-	private function __construct() {
+    /**
+     * Initialize the plugin by loading admin scripts & styles and adding a
+     * settings page and menu.
+     *
+     * @since     1.0.0
+     */
+    private function __construct() {
 
-		/*
-		 * Call $plugin_slug from public plugin class.
-		 */
-		$plugin = RplusWpTopContent::get_instance();
-		$this->plugin_slug = $plugin->get_plugin_slug();
+        /**
+         * Call $plugin_slug from public plugin class.
+         */
+        $plugin = RplusWpTopContent::get_instance();
+        $this->plugin_slug = $plugin->get_plugin_slug();
 
-		// Load admin style sheet and JavaScript.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+        // Load admin style sheet and JavaScript.
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
-		// Add the options page and menu item.
-		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
+        // Add the options page and menu item.
+        add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
 
         // Add the options for the options page
         add_action( 'admin_init', array( $this, 'add_plugin_admin_options' ) );
 
-		// Add an action link pointing to the options page.
-		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_slug . '.php' );
-		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
+        // Add an action link pointing to the options page.
+        $plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_slug . '.php' );
+        add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
         // Work with OAuth response, when set.
         if ( isset( $_GET['code'] ) ) {
@@ -77,12 +77,105 @@ class RplusWpTopContentAdmin {
 
         $this->change_admin_columns();
 
-		// Filter posts for custom column sorting
-		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+        // Filter posts for custom column sorting.
+        add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 
-		add_filter('get_meta_sql', array( $this, 'change_columns_order_sql' ) );
+        add_filter( 'get_meta_sql', array( $this, 'change_columns_order_sql' ) );
+
+        // Exclude posts.
+        add_action( 'add_meta_boxes_post', array( $this, 'add_meta_boxes' ) );
+        add_action( 'save_post', array( $this, 'save_exclude_posts' ), 10, 3 );
+
+        // Register the exclude meta.
+        register_meta( 'post', 'topcontent_exclude', array( $this, 'sanitize_meta_topcontent_exclude' ), '__return_false' );
 
     }
+
+    /**
+     * Sanitize the exclude post meta value.
+     *
+     * @param $exclude
+     * @return string
+     */
+    public function sanitize_meta_topcontent_exclude( $exclude ) {
+
+        if ( in_array( $exclude, array( 'yes', 'no' ) ) ) {
+            return $exclude;
+        }
+
+        // The submitted value is not valid, set default option to 'no'.
+        return 'no';
+    }
+
+    /**
+     * Add meta boxes.
+     */
+    public function add_meta_boxes() {
+        add_meta_box(
+            'rpluswptopcontent',
+            __( 'Top Content', 'rpluswptopcontent' ),
+            array( $this, 'metabox_content_exclude_posts' ),
+            'post',
+            'side'
+        );
+    }
+
+    /**
+     * Display the metabox content
+     */
+    public function metabox_content_exclude_posts( $post ) {
+
+        wp_nonce_field( basename(__FILE__), "rpluswptopcontentexcludenonce" );
+        $checkbox_value = get_post_meta( $post->ID, "topcontent_exclude", true);
+        ?>
+        <div>
+            <label>
+                <input type="hidden" name="rpluswptopcontent" value="no">
+                <input name="rpluswptopcontentexclude" type="checkbox" value="yes" id="rpluswptopcontentexclude" <?php echo checked( 'yes', $checkbox_value ); ?>>
+                <?php _e( 'Exclude this post from top content lists', 'rpluswptopcontent' ); ?>
+            </label>
+       </div>
+        <?php
+
+    }
+
+    /**
+     * Save the custom fields from meta boxes.
+     *
+     * @param $post_id
+     * @param $post
+     * @param $update
+     *
+     * @return mixed
+     */
+    public function save_exclude_posts( $post_id, $post, $update ) {
+
+        if ( ! isset( $_POST['rpluswptopcontentexcludenonce'] ) || ! wp_verify_nonce( $_POST['rpluswptopcontentexcludenonce'], basename( __FILE__ ) ) ) {
+            return $post_id;
+        }
+
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return $post_id;
+        }
+
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+            return $post_id;
+        }
+
+        $slug = 'post';
+        if ( $slug != $post->post_type ) {
+            return $post_id;
+        }
+
+        $exclude = '';
+        if ( isset( $_POST['rpluswptopcontentexclude'] ) ) {
+            $exclude = $_POST['rpluswptopcontentexclude'];
+        }
+
+        update_post_meta( $post_id, 'topcontent_exclude', $exclude );
+
+    }
+
 
     /**
      * Add filters to selected post types to changes admin columns and content
@@ -99,7 +192,7 @@ class RplusWpTopContentAdmin {
             // fill custom columns
             add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'admin_manage_columns' ), 10, 2 );
 
-	        add_filter( "manage_edit-{$post_type}_sortable_columns", array( $this, 'admin_sortable_columns' ) );
+            add_filter( "manage_edit-{$post_type}_sortable_columns", array( $this, 'admin_sortable_columns' ) );
 
         }
 
@@ -151,140 +244,140 @@ class RplusWpTopContentAdmin {
 
     }
 
-	/**
-	 * Filter the sortable columns.
-	 *
-	 * @param array $columns The columns that can be filtered.
-	 *
-	 * @return array
-	 */
-	public function admin_sortable_columns( $columns ) {
-		$columns['rplustopcontent'] = 'rplustopcontent';
+    /**
+     * Filter the sortable columns.
+     *
+     * @param array $columns The columns that can be filtered.
+     *
+     * @return array
+     */
+    public function admin_sortable_columns( $columns ) {
+        $columns['rplustopcontent'] = 'rplustopcontent';
 
-		return $columns;
-	}
+        return $columns;
+    }
 
-	/**
-	 * Modify the query for the custom sorting.
-	 *
-	 * @param WP_Query $query
-	 */
-	public function pre_get_posts( $query ) {
-		if( ! is_admin() )
-			return;
+    /**
+     * Modify the query for the custom sorting.
+     *
+     * @param WP_Query $query
+     */
+    public function pre_get_posts( $query ) {
+        if( ! is_admin() )
+            return;
 
-		$orderby = $query->get( 'orderby');
+        $orderby = $query->get( 'orderby');
 
-		if( 'rplustopcontent' === $orderby ) {
-			$query->set('meta_key','rplus_top_content_pageviews');
-			$query->set('orderby','meta_value_num');
-		}
-	}
+        if( 'rplustopcontent' === $orderby ) {
+            $query->set('meta_key','rplus_top_content_pageviews');
+            $query->set('orderby','meta_value_num');
+        }
+    }
 
-	/**
-	 * Filter the SQL clauses for the column sorting to include posts
-	 * without any ratings.
-	 *
-	 * @param array $clauses The SQL clauses
-	 *
-	 * @return array
-	 */
-	public function change_columns_order_sql( $clauses ) {
-		global $wp_query;
+    /**
+     * Filter the SQL clauses for the column sorting to include posts
+     * without any ratings.
+     *
+     * @param array $clauses The SQL clauses
+     *
+     * @return array
+     */
+    public function change_columns_order_sql( $clauses ) {
+        global $wp_query;
 
-		if ( 'rplus_top_content_pageviews' === $wp_query->get( 'meta_key' ) && 'meta_value_num' === $wp_query->get( 'orderby' ) ) {
-			// Left Join so empty values will be returned as well
-			$clauses['join'] = str_replace( 'INNER JOIN', 'LEFT JOIN', $clauses['join'] ) . $clauses['where'];
-			$clauses['where'] = '';
-		}
+        if ( 'rplus_top_content_pageviews' === $wp_query->get( 'meta_key' ) && 'meta_value_num' === $wp_query->get( 'orderby' ) ) {
+            // Left Join so empty values will be returned as well
+            $clauses['join'] = str_replace( 'INNER JOIN', 'LEFT JOIN', $clauses['join'] ) . $clauses['where'];
+            $clauses['where'] = '';
+        }
 
-		return $clauses;
-	}
+        return $clauses;
+    }
 
-	/**
-	 * Return an instance of this class.
-	 *
-	 * @return    object    A single instance of this class.
+    /**
+     * Return an instance of this class.
+     *
+     * @return    object    A single instance of this class.
      * @since   1.0.0
-	 */
-	public static function get_instance() {
+     */
+    public static function get_instance() {
 
-		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance ) {
-			self::$instance = new self;
-		}
+        // If the single instance hasn't been set, set it now.
+        if ( null == self::$instance ) {
+            self::$instance = new self;
+        }
 
-		return self::$instance;
-	}
+        return self::$instance;
+    }
 
-	/**
-	 * Register and enqueue admin-specific style sheet.
-	 *
-	 * @return    null    Return early if no settings page is registered.
+    /**
+     * Register and enqueue admin-specific style sheet.
+     *
+     * @return    null    Return early if no settings page is registered.
      * @since     1.0.0
-	 */
-	public function enqueue_admin_styles() {
+     */
+    public function enqueue_admin_styles() {
 
-		if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
-			return;
-		}
+        if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
+            return;
+        }
 
-		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
-			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), RplusWpTopContent::VERSION );
-		}
+        $screen = get_current_screen();
+        if ( $this->plugin_screen_hook_suffix == $screen->id ) {
+            wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), RplusWpTopContent::VERSION );
+        }
 
-	}
+    }
 
-	/**
-	 * Register and enqueue admin-specific JavaScript.
-	 *
-	 * @return    null    Return early if no settings page is registered.
+    /**
+     * Register and enqueue admin-specific JavaScript.
+     *
+     * @return    null    Return early if no settings page is registered.
      * @since     1.0.0
-	 */
-	public function enqueue_admin_scripts() {
+     */
+    public function enqueue_admin_scripts() {
 
-		if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
-			return;
-		}
+        if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
+            return;
+        }
 
-		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
-			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery' ), RplusWpTopContent::VERSION );
-		}
+        $screen = get_current_screen();
+        if ( $this->plugin_screen_hook_suffix == $screen->id ) {
+            wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery' ), RplusWpTopContent::VERSION );
+        }
 
-	}
+    }
 
-	/**
-	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
-	 *
-	 * @since    1.0.0
-	 */
-	public function add_plugin_admin_menu() {
+    /**
+     * Register the administration menu for this plugin into the WordPress Dashboard menu.
+     *
+     * @since    1.0.0
+     */
+    public function add_plugin_admin_menu() {
 
-		/*
-		 * Add a settings page for this plugin to the Settings menu.
-		 */
-		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'WP Top Content', 'rpluswptopcontent' ),
-			__( 'WP Top Content', 'rpluswptopcontent' ),
-			'manage_options',
-			$this->plugin_slug,
-			array( $this, 'display_plugin_admin_page' )
-		);
+        /*
+         * Add a settings page for this plugin to the Settings menu.
+         */
+        $this->plugin_screen_hook_suffix = add_options_page(
+            __( 'WP Top Content', 'rpluswptopcontent' ),
+            __( 'WP Top Content', 'rpluswptopcontent' ),
+            'manage_options',
+            $this->plugin_slug,
+            array( $this, 'display_plugin_admin_page' )
+        );
 
-	}
+    }
 
-	/**
-	 * Render the settings page for this plugin.
-	 *
-	 * @since    1.0.0
-	 */
-	public function display_plugin_admin_page() {
+    /**
+     * Render the settings page for this plugin.
+     *
+     * @since    1.0.0
+     */
+    public function display_plugin_admin_page() {
 
-    	include_once( 'views/admin.php' );
+        include_once( 'views/admin.php' );
 
-	}
+    }
 
     /**
      * Add options for the options page
@@ -498,21 +591,21 @@ class RplusWpTopContentAdmin {
 
     }
 
-	/**
-	 * Add settings action link to the plugins page.
-	 *
-	 * @since    1.0.0
-	 */
-	public function add_action_links( $links ) {
+    /**
+     * Add settings action link to the plugins page.
+     *
+     * @since    1.0.0
+     */
+    public function add_action_links( $links ) {
 
-		return array_merge(
-			array(
-				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'rpluswptopcontent' ) . '</a>'
-			),
-			$links
-		);
+        return array_merge(
+            array(
+                'settings' => '<a href="' . admin_url( 'options-general.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'rpluswptopcontent' ) . '</a>'
+            ),
+            $links
+        );
 
-	}
+    }
 
     /**
      * Google OAuth response, authenticate and fetch access token

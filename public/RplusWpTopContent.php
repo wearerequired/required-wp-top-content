@@ -303,7 +303,19 @@ class RplusWpTopContent {
             'orderby' => 'meta_value_num',
 	        'meta_type' => 'NUMERIC',
             'order' => 'DESC',
-            'meta_key' => 'rplus_top_content_pageviews'
+            'meta_key' => 'rplus_top_content_pageviews',
+	        'meta_query' => array(
+		        'relation' => 'OR',
+		        array(
+			        'key' => 'topcontent_exclude',
+			        'value' => 'yes',
+			        'compare' => '!=',
+		        ),
+		        array(
+			        'key' => 'topcontent_exclude',
+			        'compare' => 'NOT EXISTS',
+		        ),
+	        ),
         ) ) );
 
         // query defined post types with synced analytics data.
