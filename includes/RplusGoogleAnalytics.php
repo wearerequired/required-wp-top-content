@@ -35,12 +35,14 @@ class RplusGoogleAnalytics {
             return false;
         }
 
-        $path_autoloader = dirname( __FILE__ ) . '/vendor/autoload.php';
-        if ( ! file_exists( $path_autoloader ) ) {
-            return false;
-        }
+        if ( ! class_exists( 'Google_Client' ) ) {
+            $path_autoloader = dirname( __FILE__ ) . '/vendor/autoload.php';
+            if ( ! file_exists( $path_autoloader ) ) {
+                return false;
+            }
 
-        require_once $path_autoloader;
+            require_once $path_autoloader;
+        }
 
         $client = new Google_Client();
         $client->setApplicationName( "WordPress Plugin - required-wp-top-content" );
