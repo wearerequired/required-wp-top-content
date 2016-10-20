@@ -16,20 +16,7 @@
     "vendor-dir": "./includes/vendor"
   },
   "require": {
-    "google/apiclient": "1.1.7"
-  },
-  "repositories" : [
-    {
-      "type": "package",
-      "package": {
-        "name": "google/apiclient",
-        "version": "1.1.7",
-        "source": {
-          "url": "git@github.com:google/google-api-php-client.git",
-          "type": "git",
-          "reference": "master"
-        }
-      }
-    }
-  ]
+    "php": ">=5.4",
+    "google/apiclient": "^2.0"
+  }
 }
