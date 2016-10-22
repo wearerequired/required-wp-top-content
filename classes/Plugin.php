@@ -65,5 +65,14 @@ class Plugin {
 	 * @access public
 	 */
 	public function plugins_loaded() {
+		if ( is_admin() ) {
+			$plugin_action_links = new Admin\PluginActionLinks( PLUGIN_BASENAME );
+			$plugin_action_links->add_link(
+				'setting',
+				'<a href="' . admin_url( ) . '">' . __( 'Settings', 'rpluswptopcontent' ) . '</a>'
+			);
+			$plugin_action_links->register();
+		}
+
 	}
 }
