@@ -65,26 +65,26 @@ class RplusGoogleAnalytics {
     public static function get_google_api_access_token() {
 
         $access_token = get_option( 'rplus_topcontent_options_ga_access_token' );
+        // Back-compat: Previously the client returned a JSON string.
+        if ( is_string( $access_token ) ) {
+            $access_token = json_decode( $access_token, true );
+        }
 
-        if ( ! $access_token || empty ( $access_token ) || $access_token == 'null' ) {
-
+        if ( ! $access_token  ) {
             return false;
-
         }
 
         try {
 
             $client = self::get_google_api_client();
-            if ( false === $client )
+            if ( false === $client ) {
                 return false;
+            }
 
             $client->setAccessToken( $access_token );
 
             if ( $client->isAccessTokenExpired() ) {
-
-                $refresh = json_decode( $access_token );
-                $client->refreshToken( $refresh->refresh_token );
-
+                $client->refreshToken( $access_token['refresh_token'] );
             }
 
         } catch ( Exception $e ) {
