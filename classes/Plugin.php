@@ -69,9 +69,12 @@ class Plugin {
 			$plugin_action_links = new Admin\PluginActionLinks( PLUGIN_BASENAME );
 			$plugin_action_links->add_link(
 				'setting',
-				'<a href="' . admin_url( ) . '">' . __( 'Settings', 'rpluswptopcontent' ) . '</a>'
+				'<a href="' . admin_url( ) . '">' . __( 'Settings', 'required-wp-top-content' ) . '</a>'
 			);
 			$plugin_action_links->register();
+
+			$settings_page = new Admin\SettingsPage();
+			add_action( 'admin_menu', [ $settings_page, 'add' ] );
 		}
 
 	}
