@@ -80,5 +80,6 @@ class Plugin {
 			$pageviews_posts_list_table_column->register();
 		}
 
+		add_action( 'widgets_init', [ __NAMESPACE__ . '\TopContentWidget', 'register' ] );
 	}
 }
