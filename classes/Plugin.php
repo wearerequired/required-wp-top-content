@@ -75,6 +75,9 @@ class Plugin {
 
 			$settings_page = new Admin\SettingsPage();
 			add_action( 'admin_menu', [ $settings_page, 'add' ] );
+
+			$pageviews_posts_list_table_column = new Admin\PageViewsPostsListTableColumn();
+			$pageviews_posts_list_table_column->register();
 		}
 
 	}
