@@ -37,6 +37,16 @@ class TopContentExcludeMeta extends Meta {
 	public $meta_key = 'topcontent_exclude';
 
 	/**
+	 * This meta key has one value per object.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @var bool
+	 */
+	public $single = true;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 2.0.0
