@@ -54,18 +54,17 @@ class TopContentExcludeMetaBoxView implements MetaBoxViewInterface {
 	 * @access public
 	 */
 	public function render() {
-		wp_nonce_field( $this->meta->meta_key . '-nonce' );
+		wp_nonce_field( 'save-' . $this->post->ID, $this->meta->meta_key . '-nonce' );
 
 		$checkbox_value = get_post_meta( $this->post->ID, $this->meta->meta_key, $this->meta->single );
 		?>
 		<div>
 			<label>
-				<input type="hidden" name="rpluswptopcontent" value="no" />
 				<input
-					name="rpluswptopcontentexclude"
+					name="<?php echo esc_attr( $this->meta->meta_key ); ?>"
 					type="checkbox"
 					value="yes"
-					id="rpluswptopcontentexclude"
+					id="<?php echo esc_attr( $this->meta->meta_key ); ?>"
 					<?php checked( 'yes', $checkbox_value ); ?> />
 				<?php _e( 'Exclude this post from top content lists', 'required-wp-top-content' ); ?>
 			</label>
