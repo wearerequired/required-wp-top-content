@@ -108,4 +108,39 @@ class TopContentExcludeMetaBox implements MetaBoxInterface {
 			$this->callback_args
 		);
 	}
+
+	/**
+	 * Saves the value of the meta box.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @param int     $post_id Post ID.
+	 * @param \WP_Post $post    Post object.
+	 */
+	public function save_meta( $post_id, WP_Post $post ) {
+		if ( ! in_array( $post->post_type, $this->post_types, true ) ) {
+			return;
+		}
+
+		$nonce_key = $this->meta->meta_key . '-nonce';
+		if ( ! isset( $_POST[ $nonce_key ] ) || ! wp_verify_nonce( $_POST[ $nonce_key ], 'save-' . $post_id ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		$value = '';
+		if ( isset( $_POST[ $this->meta->meta_key ] ) ) {
+			$value = $_POST[ $this->meta->meta_key ];
+		}
+
+		update_post_meta( $post_id, $this->meta->meta_key, $value );
+	}
 }

@@ -95,6 +95,7 @@ class Plugin {
 			// Meta box.
 			$top_content_exclude_meta_box = new Admin\TopContentExcludeMetaBox( $top_content_exclude_meta );
 			add_action( 'add_meta_boxes', [ $top_content_exclude_meta_box, 'add' ], 10, 2 );
+			add_action( 'save_post', [ $top_content_exclude_meta_box, 'save_meta' ], 10, 2 );
 		}
 	}
 }
