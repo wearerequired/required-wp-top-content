@@ -56,4 +56,16 @@ class SettingsPage implements AdminPageInterface {
 			[ $view, 'render' ]
 		);
 	}
+
+	/**
+	 * Retrieves page's hook_suffix.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return string Page's hook_suffix.
+	 */
+	public function get_page_hook() {
+		return $this->page_hook;
+	}
 }
