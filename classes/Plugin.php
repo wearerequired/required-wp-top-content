@@ -99,14 +99,17 @@ class Plugin {
 			);
 			$plugin_action_links->register();
 
-			// Posts list table column.
-			$pageviews_posts_list_table_column = new Admin\PageViewsPostsListTableColumn();
-			$pageviews_posts_list_table_column->register();
+			$client_adapter = new GoogleClientAdapter();
+			if ( $client_adapter->has_auth_token() ) {
+				// Posts list table column.
+				$pageviews_posts_list_table_column = new Admin\PageViewsPostsListTableColumn();
+				$pageviews_posts_list_table_column->register();
 
-			// Meta box.
-			$top_content_exclude_meta_box = new Admin\TopContentExcludeMetaBox( $top_content_exclude_meta );
-			add_action( 'add_meta_boxes', [ $top_content_exclude_meta_box, 'add' ], 10, 2 );
-			add_action( 'save_post', [ $top_content_exclude_meta_box, 'save_meta' ], 10, 2 );
+				// Meta box.
+				$top_content_exclude_meta_box = new Admin\TopContentExcludeMetaBox( $top_content_exclude_meta );
+				add_action( 'add_meta_boxes', [ $top_content_exclude_meta_box, 'add' ], 10, 2 );
+				add_action( 'save_post', [ $top_content_exclude_meta_box, 'save_meta' ], 10, 2 );
+			}
 		}
 	}
 
