@@ -170,4 +170,33 @@ class Plugin {
 		};
 		$options_sync_days->register();
 	}
+
+	/**
+	 * Syncs Google Analytics data with posts.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 * @static
+	 */
+	public static function sync_ga_data() {
+		$client_adapter = new GoogleClientAdapter();
+
+		if ( ! $client_adapter->has_auth_token() ) {
+			return;
+		}
+
+		$ga_propertyid = get_option( 'rplus_topcontent_options_ga_propertyid', 0 );
+		if ( ! $ga_propertyid ) {
+			return;
+		}
+
+		$days = get_option( 'rplus_topcontent_options_sync_days', 30 );
+		$from = date( 'Y-m-d', strtotime( "-$days day" ) );
+		$to = date( 'Y-m-d' );
+		$data = $client_adapter->get_page_views( $ga_propertyid, $from, $to );
+
+		$syncer = new SyncGoogleAnalyticsDataWithPosts( $data );
+		$syncer->process();
+		$syncer->cleanup();
+	}
 }
