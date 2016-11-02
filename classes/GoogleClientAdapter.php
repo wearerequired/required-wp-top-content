@@ -167,7 +167,7 @@ class GoogleClientAdapter {
 	}
 
 	/**
-	 * Sets the access token and refreshes the toke if it's expired.
+	 * Sets the access token and refreshes the token if it's expired.
 	 *
 	 * @since 2.0.0
 	 * @access public
@@ -184,8 +184,11 @@ class GoogleClientAdapter {
 			$this->client->setAccessToken( $access_token );
 
 			if ( $this->client->isAccessTokenExpired() ) {
-				$new_access_token = $this->client->refreshToken( $access_token['refresh_token'] );
-				update_option( 'rplus_topcontent_options_ga_access_token', $new_access_token );
+				$new_access_token = $this->client->fetchAccessTokenWithRefreshToken( $access_token['refresh_token'] );
+				if ( ! empty( $new_access_token['access_token'] ) ) {
+					$new_access_token = array_merge( $access_token, $new_access_token ); // We need to merge the 'refresh_token'.
+					update_option( 'rplus_topcontent_options_ga_access_token', $new_access_token );
+				}
 			}
 		} catch ( Exception $e ) {
 			return false;
