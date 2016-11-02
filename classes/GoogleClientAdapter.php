@@ -53,7 +53,7 @@ class GoogleClientAdapter {
 		if ( 'custom' === $type ) {
 			$this->use_user_credentials();
 		} else {
-			$this->use_default_credntials();
+			$this->use_default_credentials();
 		}
 
 		$this->service = new Google_Service_Analytics( $this->client );
@@ -61,7 +61,12 @@ class GoogleClientAdapter {
 
 
 	/**
-	 * @return Google_Client
+	 * Returns the Google_Client instance.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return \Google_Client
 	 */
 	public function get_client() {
 		return $this->client;
@@ -84,7 +89,7 @@ class GoogleClientAdapter {
 	 * @since 2.0.0
 	 * @access public
 	 */
-	public function use_default_credntials() {
+	public function use_default_credentials() {
 		$this->client->setClientId( self::AUTH_CLIENT_ID );
 		$this->client->setClientSecret( self::AUTH_CLIENT_SECRET );
 	}
