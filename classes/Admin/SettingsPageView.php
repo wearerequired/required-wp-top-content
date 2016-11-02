@@ -74,7 +74,7 @@ class SettingsPageView implements AdminPageViewInterface {
 				action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
 				<?php echo ( $this->data->show_step_1 ? '' : ' class="hidden"' ); ?>>
 				<?php wp_nonce_field( 'save-auth-credentials' ); ?>
-				<input type="hidden" name="action" value="save-auth-credentials" />
+				<input type="hidden" name="action" value="required-save-auth-credentials" />
 
 				<p>
 					<input
@@ -130,7 +130,7 @@ class SettingsPageView implements AdminPageViewInterface {
 				action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
 				<?php echo ( $this->data->show_step_2 ? '' : ' class="hidden"' ); ?>>
 				<?php wp_nonce_field( 'authorize' ); ?>
-				<input type="hidden" name="action" value="authorize" />
+				<input type="hidden" name="action" value="required-authorize" />
 
 				<p><?php _e( 'Please click on <em>Get Auth Code</em> and paste the code into the text field below.', 'required-wp-top-content' ); ?></p>
 
@@ -168,7 +168,7 @@ class SettingsPageView implements AdminPageViewInterface {
 				action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
 				<?php echo ( $this->data->show_step_3 ? '' : ' class="hidden"' ); ?>>
 				<?php wp_nonce_field( 'save-profile' ); ?>
-				<input type="hidden" name="action" value="save-profile" />
+				<input type="hidden" name="action" value="required-save-profile" />
 
 				<p><?php _e( 'Please select the profile to use.', 'required-wp-top-content' ); ?></p>
 
