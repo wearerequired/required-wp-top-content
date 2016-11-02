@@ -92,6 +92,62 @@ class GoogleClientAdapter {
 		$this->client->setClientSecret( self::AUTH_CLIENT_SECRET );
 	}
 
+
+	/**
+	 * Sets the access token and refreshes the token if it's expired.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
+	public function set_access_token() {
+		$access_token = get_option( 'rplus_topcontent_options_ga_access_token' );
+		if ( ! $access_token ) {
+			return false;
+		}
+
+		try {
+			$this->client->setAccessToken( $access_token );
+
+			if ( $this->client->isAccessTokenExpired() ) {
+				$new_access_token = $this->client->fetchAccessTokenWithRefreshToken( $access_token['refresh_token'] );
+				if ( ! empty( $new_access_token['access_token'] ) ) {
+					$new_access_token = array_merge( $access_token, $new_access_token ); // We need to merge the 'refresh_token'.
+					update_option( 'rplus_topcontent_options_ga_access_token', $new_access_token );
+				}
+			}
+		} catch ( Exception $e ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether the client has a valid auth token.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
+	public function has_auth_token() {
+		return ! empty( $this->client->getAccessToken() );
+	}
+
+	/**
+	 * Whether the client has valid secrets.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
+	public function has_auth_secrets() {
+		return ! empty( $this->client->getClientId() ) && ! empty( $this->client->getClientSecret() );
+	}
+
 	/**
 	 * Retrieves a list of Google Analytics accounts.
 	 *
@@ -185,60 +241,5 @@ class GoogleClientAdapter {
 
 		$pages = $data->getRows();
 		return $pages;
-	}
-
-	/**
-	 * Sets the access token and refreshes the token if it's expired.
-	 *
-	 * @since 2.0.0
-	 * @access public
-	 *
-	 * @return bool True on success, false otherwise.
-	 */
-	public function set_access_token() {
-		$access_token = get_option( 'rplus_topcontent_options_ga_access_token' );
-		if ( ! $access_token ) {
-			return false;
-		}
-
-		try {
-			$this->client->setAccessToken( $access_token );
-
-			if ( $this->client->isAccessTokenExpired() ) {
-				$new_access_token = $this->client->fetchAccessTokenWithRefreshToken( $access_token['refresh_token'] );
-				if ( ! empty( $new_access_token['access_token'] ) ) {
-					$new_access_token = array_merge( $access_token, $new_access_token ); // We need to merge the 'refresh_token'.
-					update_option( 'rplus_topcontent_options_ga_access_token', $new_access_token );
-				}
-			}
-		} catch ( Exception $e ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Whether the client has a valid auth token.
-	 *
-	 * @since 2.0.0
-	 * @access public
-	 *
-	 * @return bool True on success, false otherwise.
-	 */
-	public function has_auth_token() {
-		return ! empty( $this->client->getAccessToken() );
-	}
-
-	/**
-	 * Whether the client has valid secrets.
-	 *
-	 * @since 2.0.0
-	 * @access public
-	 *
-	 * @return bool True on success, false otherwise.
-	 */
-	public function has_auth_secrets() {
-		return ! empty( $this->client->getClientId() ) && ! empty( $this->client->getClientSecret() );
 	}
 }
