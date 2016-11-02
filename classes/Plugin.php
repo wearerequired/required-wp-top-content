@@ -89,6 +89,7 @@ class Plugin {
 			add_action( 'wp_ajax_required-google-authorize', [ $settings_page, 'ajax_google_authorize' ] );
 			add_action( 'admin_post_required-save-profile', [ $settings_page, 'save_profile' ] );
 			add_action( 'admin_post_required-remove-authorization', [ $settings_page, 'remove_authorization' ] );
+			add_action( 'admin_post_required-do-sync', [ $settings_page, 'do_manual_sync' ] );
 
 			// Plugin action link for settings page.
 			$plugin_action_links = new Admin\PluginActionLinks( PLUGIN_BASENAME );

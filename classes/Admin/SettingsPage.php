@@ -8,6 +8,7 @@
  */
 
 namespace Required\WP_Top_Content\Admin;
+use Required\WP_Top_Content\Plugin;
 use const Required\WP_Top_Content\PLUGIN_FILE;
 use Required\WP_Top_Content\GoogleClientAdapter;
 use stdClass;
@@ -258,6 +259,41 @@ class SettingsPage implements AdminPageInterface {
 	}
 
 	/**
+	 * Performs a manual Google Analytics data sync.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 */
+	public function do_manual_sync() {
+		$referer = wp_get_referer();
+		if ( ! $referer ) {
+			exit;
+		}
+
+		$referer = add_query_arg( 'settings-updated', '1', $referer );
+
+		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'do-sync' ) ) {
+			add_settings_error( self::MENU_SLUG, 'nonce_invalid', __( 'Error while performing manual sync. Please try again.', 'required-wp-top-content' ) );
+			set_transient( 'settings_errors', get_settings_errors(), 30 );
+			wp_safe_redirect( $referer );
+			exit;
+		}
+
+		Plugin::sync_ga_data();
+
+		add_settings_error(
+			self::MENU_SLUG,
+			'authorization_removed',
+			__( 'Data successfully synced.', 'required-wp-top-content' ),
+			'updated'
+		);
+		set_transient( 'settings_errors', get_settings_errors(), 30 );
+
+		wp_safe_redirect( $referer );
+		exit;
+	}
+
+	/**
 	 * Retrieves page's hook_suffix.
 	 *
 	 * @since 2.0.0
@@ -309,7 +345,7 @@ class SettingsPage implements AdminPageInterface {
 			function() {
 				printf(
 					__( '<a href="%s" class="button button-secondary">Start synchronisation now</a>', 'required-wp-top-content' ),
-					wp_nonce_url( admin_url( 'admin-post.php?action=required-do-sync' ), 'required-do-sync' )
+					wp_nonce_url( admin_url( 'admin-post.php?action=required-do-sync' ), 'do-sync' )
 				);
 			},
 			self::MENU_SLUG,
