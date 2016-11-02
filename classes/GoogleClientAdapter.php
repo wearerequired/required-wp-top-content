@@ -167,6 +167,27 @@ class GoogleClientAdapter {
 	}
 
 	/**
+	 * Retrieves the page views and visits of a profile.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @param int    $property_id Profile ID.
+	 * @param string $from        Date from.
+	 * @param string $to          Date to.
+	 * @return array Page views and visits.
+	 */
+	public function get_page_views( $property_id, $from, $to ) {
+		$data = $this->service->data_ga->get( 'ga:' . $property_id, $from, $to, 'ga:pageviews,ga:visits', [
+			'dimensions' => 'ga:pagePath',
+			'sort'       => '-ga:pageviews,ga:pagePath',
+		] );
+
+		$pages = $data->getRows();
+		return $pages;
+	}
+
+	/**
 	 * Sets the access token and refreshes the token if it's expired.
 	 *
 	 * @since 2.0.0
