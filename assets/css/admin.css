@@ -1,0 +1,41 @@
+.google-api-auth:after {
+	content: '';
+	display: table;
+	clear: both;
+}
+
+.google-api-auth .long-text {
+	width: 100%;
+}
+
+.long-text-with-button {
+	width: 70%;
+}
+
+.wp-core-ui .google-api-auth button + button {
+	margin-left: 10px;
+}
+
+.google-api-auth .actions {
+	margin-top: 2em;
+}
+
+.google-api-auth  .button-link {
+	color: #0073aa;
+	text-decoration: underline;
+}
+
+.google-api-auth .button-link:hover,
+.google-api-auth .button-link:active {
+	color: #00a0d2;
+}
+
+.google-api-auth .button-link:focus {
+	color: #124964;
+	-webkit-box-shadow:
+		0 0 0 1px #5b9dd9,
+		0 0 2px 1px rgba(30, 140, 190, .8);
+	box-shadow:
+		0 0 0 1px #5b9dd9,
+		0 0 2px 1px rgba(30, 140, 190, .8);
+}
