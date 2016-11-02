@@ -64,7 +64,7 @@ class TopContentExcludeMeta extends Meta {
 	 * @return string
 	 */
 	public function sanitize_callback( $value ) {
-		if ( in_array( $value, array( 'yes', 'no' ), true ) ) {
+		if ( in_array( $value, [ 'yes', 'no' ], true ) ) {
 			return $value;
 		}
 
