@@ -81,6 +81,10 @@ class Plugin {
 			// Settings page.
 			$settings_page = new Admin\SettingsPage();
 			add_action( 'admin_menu', [ $settings_page, 'add' ] );
+			add_action( 'wp_ajax_required-save-auth-data', [ $settings_page, 'ajax_save_auth_data' ] );
+			add_action( 'wp_ajax_required-google-authorize', [ $settings_page, 'ajax_google_authorize' ] );
+			add_action( 'admin_post_save-profile', [ $settings_page, 'save_profile' ] );
+			add_action( 'admin_post_required-remove-authorization', [ $settings_page, 'remove_authorization' ] );
 
 			// Plugin action link for settings page.
 			$plugin_action_links = new Admin\PluginActionLinks( PLUGIN_BASENAME );
