@@ -78,17 +78,17 @@ class Plugin {
 		$top_content_exclude_meta->register();
 
 		if ( is_admin() ) {
-			// Plugin action link for settings page.
-			$plugin_action_links = new Admin\PluginActionLinks( PLUGIN_BASENAME );
-			$plugin_action_links->add_link(
-				'setting',
-				'<a href="' . admin_url( ) . '">' . __( 'Settings', 'required-wp-top-content' ) . '</a>'
-			);
-			$plugin_action_links->register();
-
 			// Settings page.
 			$settings_page = new Admin\SettingsPage();
 			add_action( 'admin_menu', [ $settings_page, 'add' ] );
+
+			// Plugin action link for settings page.
+			$plugin_action_links = new Admin\PluginActionLinks( PLUGIN_BASENAME );
+			$plugin_action_links->add_admin_page_link(
+				$settings_page,
+				__( 'Settings', 'required-wp-top-content' )
+			);
+			$plugin_action_links->register();
 
 			// Posts list table column.
 			$pageviews_posts_list_table_column = new Admin\PageViewsPostsListTableColumn();
