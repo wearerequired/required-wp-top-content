@@ -37,6 +37,9 @@ require __DIR__ . '/vendor/autoload.php';
 define( __NAMESPACE__ . '\PLUGIN_FILE', __FILE__ );
 define( __NAMESPACE__ . '\PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
+register_activation_hook( __FILE__, [ Plugin::class, 'activated' ] );
+register_deactivation_hook( __FILE__, [ Plugin::class, 'deactivated' ] );
+
 Plugin::get_instance();
 
 include __DIR__ . '/functions.php';

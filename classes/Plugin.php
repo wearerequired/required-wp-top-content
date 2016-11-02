@@ -16,6 +16,8 @@ namespace Required\WP_Top_Content;
  */
 class Plugin {
 
+	const CRON_HOOK = 'rplus_top_content_cron_hook';
+
 	/**
 	 * Holds the singleton instance.
 	 *
@@ -72,6 +74,8 @@ class Plugin {
 		add_action( 'widgets_init', [ __NAMESPACE__ . '\TopContentWidget', 'register' ] );
 
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
+
+		add_action( self::CRON_HOOK, [ self::class, 'sync_ga_data' ] );
 
 		// Meta.
 		$top_content_exclude_meta = new TopContentExcludeMeta();
@@ -198,5 +202,31 @@ class Plugin {
 		$syncer = new SyncGoogleAnalyticsDataWithPosts( $data );
 		$syncer->process();
 		$syncer->cleanup();
+	}
+
+	/**
+	 * Called when plugin has been activated.
+	 *
+	 * Schedules a periodic event for data sync.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 * @static
+	 */
+	public static function activated() {
+		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
+			wp_schedule_event( time(), 'hourly', self::CRON_HOOK );
+		}
+	}
+
+	/**
+	 * Called when plugin has been activated.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 * @static
+	 */
+	public static function deactivated() {
+		wp_clear_scheduled_hook( self::CRON_HOOK );
 	}
 }
