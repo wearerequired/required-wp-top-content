@@ -8,6 +8,7 @@
  */
 
 namespace Required\WP_Top_Content;
+use Exception;
 use Google_Client;
 use Google_Service_Analytics;
 
@@ -44,10 +45,7 @@ class GoogleClientAdapter {
 		$this->client->setScopes( 'https://www.googleapis.com/auth/analytics.readonly' );
 		$this->client->setAccessType( 'offline' );
 
-		$access_token = get_option( 'rplus_topcontent_options_ga_access_token' );
-		if ( $access_token ) {
-			$this->client->setAccessToken( $access_token );
-		}
+		$this->set_access_token();
 
 		$type = get_option( 'rplus_topcontent_options_ga_auth_type' );
 		if ( 'custom' === $type ) {
@@ -166,6 +164,34 @@ class GoogleClientAdapter {
 		set_transient( $cache_key, $html, HOUR_IN_SECONDS );
 
 		return $html;
+	}
+
+	/**
+	 * Sets the access token and refreshes the toke if it's expired.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
+	public function set_access_token() {
+		$access_token = get_option( 'rplus_topcontent_options_ga_access_token' );
+		if ( ! $access_token ) {
+			return false;
+		}
+
+		try {
+			$this->client->setAccessToken( $access_token );
+
+			if ( $this->client->isAccessTokenExpired() ) {
+				$new_access_token = $this->client->refreshToken( $access_token['refresh_token'] );
+				update_option( 'rplus_topcontent_options_ga_access_token', $new_access_token );
+			}
+		} catch ( Exception $e ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
