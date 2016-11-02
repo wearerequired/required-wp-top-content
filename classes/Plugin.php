@@ -220,7 +220,7 @@ class Plugin {
 	}
 
 	/**
-	 * Called when plugin has been activated.
+	 * Called when plugin has been deactivated.
 	 *
 	 * @since 2.0.0
 	 * @access public
