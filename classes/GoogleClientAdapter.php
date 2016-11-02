@@ -45,14 +45,14 @@ class GoogleClientAdapter {
 		$this->client->setScopes( 'https://www.googleapis.com/auth/analytics.readonly' );
 		$this->client->setAccessType( 'offline' );
 
-		$this->set_access_token();
-
 		$type = get_option( 'rplus_topcontent_options_ga_auth_type' );
 		if ( 'custom' === $type ) {
 			$this->use_user_credentials();
 		} else {
 			$this->use_default_credentials();
 		}
+
+		$this->set_access_token();
 
 		$this->service = new Google_Service_Analytics( $this->client );
 	}
