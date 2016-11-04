@@ -111,6 +111,17 @@ class Plugin {
 				$top_content_exclude_meta_box = new Admin\TopContentExcludeMetaBox( $top_content_exclude_meta );
 				add_action( 'add_meta_boxes', [ $top_content_exclude_meta_box, 'add' ], 10, 2 );
 				add_action( 'save_post', [ $top_content_exclude_meta_box, 'save_meta' ], 10, 2 );
+			} else {
+				$admin_notice = new Admin\AdminNotice();
+				$admin_notice->message = sprintf(
+					__( 'required+ WordPress Top Content Plugin is not properly configured. Please go to the <a href="%s">settings page</a> to authorize this Plugin.','rpluswptopcontent' ),
+					admin_url( 'options-general.php?page=' . $settings_page::MENU_SLUG )
+				);
+				$admin_notice->condition = function() {
+					$screen = get_current_screen();
+					return 'plugins' === $screen->id;
+				};
+				$admin_notice->register();
 			}
 		}
 	}
