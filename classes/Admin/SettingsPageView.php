@@ -82,8 +82,9 @@ class SettingsPageView implements AdminPageViewInterface {
 						name="api-credentials-type"
 						type="radio"
 						value="default"
+						<?php disabled( ! $this->data->client_adapter->has_default_credentials() ); ?>
 						<?php checked( 'default', $this->data->auth_type ); ?> />
-					<label for="custom-api-credentials-default"><?php _e( 'Use <strong>plugin&#8217;s</strong> API credentials', 'required-wp-top-content' ); ?></label>
+					<label for="custom-api-credentials-default"><?php _e( 'Use <strong>default</strong> API credentials', 'required-wp-top-content' ); ?></label>
 				</p>
 				<p>
 					<input

@@ -19,9 +19,6 @@ use Google_Service_Analytics;
  */
 class GoogleClientAdapter {
 
-	const AUTH_CLIENT_ID = '543844416224-dns07iord4p0cncd617h44ggjtuvb0lt.apps.googleusercontent.com';
-	const AUTH_CLIENT_SECRET = 'SvBZVG12TVt4bxDnZb8hmDf4';
-
 	/**
 	 * Google's client API.
 	 *
@@ -33,19 +30,31 @@ class GoogleClientAdapter {
 	private $client;
 
 	/**
+	 * File path to the default credentials file.
+	 *
+	 * @since 2.0.0
+	 * @access private
+	 *
+	 * @var string
+	 */
+	private $default_credentials_file;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 2.0.0
 	 * @access public
 	 */
 	public function __construct() {
+		$this->default_credentials_file = apply_filters( 'required-wp-top-content.default-credentials-file', WP_CONTENT_DIR . '/google-api-auth.json' );
+
 		$this->client = new Google_Client();
 		$this->client->setApplicationName( 'WordPress Plugin - required-wp-top-content' );
 		$this->client->setRedirectUri( 'urn:ietf:wg:oauth:2.0:oob' );
 		$this->client->setScopes( 'https://www.googleapis.com/auth/analytics.readonly' );
 		$this->client->setAccessType( 'offline' );
 
-		$type = get_option( 'rplus_topcontent_options_ga_auth_type' );
+		$type = get_option( 'rplus_topcontent_options_ga_auth_type', 'custom' );
 		if ( 'custom' === $type ) {
 			$this->use_user_credentials();
 		} else {
@@ -82,16 +91,55 @@ class GoogleClientAdapter {
 	}
 
 	/**
-	 * Sets client ID and secret based on class constants.
+	 * Sets default client ID and secret.
 	 *
 	 * @since 2.0.0
 	 * @access public
 	 */
 	public function use_default_credentials() {
-		$this->client->setClientId( self::AUTH_CLIENT_ID );
-		$this->client->setClientSecret( self::AUTH_CLIENT_SECRET );
+		$data = $this->get_default_credentials();
+		if ( ! $data ) {
+			return false;
+		}
+
+		$this->client->setClientId( $data['client-id']  );
+		$this->client->setClientSecret( $data['client-secret'] );
 	}
 
+	/**
+	 * Whether a file with default credentials exists.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
+	public function has_default_credentials() {
+		return (bool) $this->get_default_credentials();
+	}
+
+	/**
+	 * Retrieves the credentials from a file.
+	 *
+	 * @since 2.0.0
+	 * @access private
+	 *
+	 * @return array|false Array with credentials on success, false otherwise.
+	 */
+	private function get_default_credentials() {
+		if ( ! file_exists( $this->default_credentials_file ) ) {
+			return false;
+		}
+
+		$data = file_get_contents( $this->default_credentials_file );
+		$data = json_decode( $data, true );
+
+		if ( ! empty( $data['client-id'] ) && ! empty( $data['client-secret'] ) ) {
+			return $data;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Sets the access token and refreshes the token if it's expired.
