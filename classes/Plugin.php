@@ -73,8 +73,10 @@ class Plugin {
 		// Widgets.
 		add_action( 'widgets_init', [ __NAMESPACE__ . '\TopContentWidget', 'register' ] );
 
+		// Options and sanitize callbacks.
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 
+		// Cron job for data sync.
 		add_action( self::CRON_HOOK, [ self::class, 'sync_ga_data' ] );
 
 		// Meta.
@@ -159,10 +161,6 @@ class Plugin {
 		$options_ga_propertyid = new Setting( $options_group, 'rplus_topcontent_options_ga_propertyid' );
 		$options_ga_propertyid->sanitize_callback = 'sanitize_text_field';
 		$options_ga_propertyid->register();
-
-		// Unused
-		//$options_ga_devkey = new Setting( $options_group, 'rplus_topcontent_options_ga_devkey' );
-		//$options_ga_devkey->register();
 
 		$options_group = 'required-wp-top-content-options';
 
