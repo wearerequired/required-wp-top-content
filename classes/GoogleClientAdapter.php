@@ -324,12 +324,17 @@ class GoogleClientAdapter {
 	 * @return array Page views and visits.
 	 */
 	public function get_page_views( $property_id, $from, $to ) {
-		$data = $this->service->data_ga->get( 'ga:' . $property_id, $from, $to, 'ga:pageviews,ga:visits', [
-			'dimensions' => 'ga:pagePath',
-			'sort'       => '-ga:pageviews,ga:pagePath',
-		] );
+		try {
+			$data = $this->service->data_ga->get( 'ga:' . $property_id, $from, $to, 'ga:pageviews,ga:visits', [
+				'dimensions' => 'ga:pagePath',
+				'sort'       => '-ga:pageviews,ga:pagePath',
+			] );
 
-		$pages = $data->getRows();
+			$pages = $data->getRows();
+		} catch ( Exception $e ) {
+			return [];
+		}
+
 		return $pages;
 	}
 }
