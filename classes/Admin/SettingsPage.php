@@ -52,16 +52,26 @@ class SettingsPage implements AdminPageInterface {
 	 */
 	public function add() {
 		$client_adapter = new GoogleClientAdapter();
+		$client_has_auth_token = $client_adapter->has_auth_token();
 
-		$data                 = new StdClass();
-		$data->client_adapter = $client_adapter;
-		$data->client_id      = get_option( 'rplus_topcontent_options_ga_client_id', '' );
-		$data->client_secret  = get_option( 'rplus_topcontent_options_ga_client_secret', '' );
-		$data->ga_propertyid  = get_option( 'rplus_topcontent_options_ga_propertyid', 0 );
-		$data->auth_type      = get_option( 'rplus_topcontent_options_ga_auth_type', 'default' );
-		$data->show_step_1    = ! $data->client_id || ! $data->client_secret;
-		$data->show_step_2    = ! $data->show_step_1 && ! $client_adapter->has_auth_token();
-		$data->show_step_3    = ! $data->show_step_1 && ! $data->show_step_2;
+		$data                    = new StdClass();
+		$data->client_adapter    = $client_adapter;
+		$data->client_id         = get_option( 'rplus_topcontent_options_ga_client_id', '' );
+		$data->client_secret     = get_option( 'rplus_topcontent_options_ga_client_secret', '' );
+		$data->option_ga_profile = get_option( 'rplus_topcontent_options_ga_profile', [] );
+		$data->auth_type         = get_option( 'rplus_topcontent_options_ga_auth_type', 'default' );
+		$data->show_step_1       = ! $data->client_id || ! $data->client_secret;
+		$data->show_step_2       = ! $data->show_step_1 && ! $client_has_auth_token;
+		$data->show_step_3       = ! $data->show_step_1 && ! $data->show_step_2;
+		$data->ga_profile        = null;
+
+		if ( $client_has_auth_token && $data->option_ga_profile ) {
+			$data->ga_profile = $client_adapter->get_profile(
+				$data->option_ga_profile['account-id'],
+				$data->option_ga_profile['web-property-id'],
+				$data->option_ga_profile['profile-id']
+			);
+		}
 
 		$view = new SettingsPageView( $data );
 		$this->page_hook = add_options_page(
@@ -213,7 +223,23 @@ class SettingsPage implements AdminPageInterface {
 			exit;
 		}
 
-		update_option( 'rplus_topcontent_options_ga_propertyid', $_REQUEST['google-analytics-profile'] );
+		$profile = wp_unslash( $_REQUEST['google-analytics-profile'] );
+		$data = explode( ':', $profile );
+
+		if ( 3 !== count( $data ) ) {
+			add_settings_error( self::MENU_SLUG, 'invalid_profile', __( 'The profile date was invalid. Please try again.', 'required-wp-top-content' ) );
+			set_transient( 'settings_errors', get_settings_errors(), 30 );
+			wp_safe_redirect( $referer );
+			exit;
+		}
+
+		$profile = [
+			'account-id'      => $data[0],
+			'web-property-id' => $data[1],
+			'profile-id'      => $data[2],
+		];
+
+		update_option( 'rplus_topcontent_options_ga_profile', $profile );
 
 		wp_safe_redirect( add_query_arg( 'updated', '1', $referer ) );
 	}
@@ -239,10 +265,17 @@ class SettingsPage implements AdminPageInterface {
 			exit;
 		}
 
+		$client_adapter = new GoogleClientAdapter();
+		if ( $client_adapter->has_auth_token() ) {
+			$google_client = $client_adapter->get_client();
+			$google_client->revokeToken();
+		}
+
 		delete_option( 'rplus_topcontent_options_ga_auth_type' );
 		delete_option( 'rplus_topcontent_options_ga_client_id' );
 		delete_option( 'rplus_topcontent_options_ga_client_secret' );
 		delete_option( 'rplus_topcontent_options_ga_propertyid' );
+		delete_option( 'rplus_topcontent_options_ga_profile' );
 		delete_option( 'rplus_topcontent_options_ga_access_token' );
 		delete_option( 'rplus_topcontent_options_ga_access_code' );
 

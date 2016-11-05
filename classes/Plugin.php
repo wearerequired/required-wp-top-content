@@ -173,6 +173,17 @@ class Plugin {
 		$options_ga_propertyid->sanitize_callback = 'sanitize_text_field';
 		$options_ga_propertyid->register();
 
+		$options_ga_profile = new Setting( $options_group, 'rplus_topcontent_options_ga_profile' );
+		$options_ga_profile->sanitize_callback = function( $value ) {
+			if ( is_array( $value ) ) {
+				return $value;
+			}
+
+			// The submitted value is not valid, set default option to an empty array.
+			return [];
+		};
+		$options_ga_profile->register();
+
 		$options_group = 'required-wp-top-content-options';
 
 		$options_sync_days = new Setting( $options_group, 'rplus_topcontent_options_sync_days' );
@@ -202,15 +213,15 @@ class Plugin {
 			return;
 		}
 
-		$ga_propertyid = get_option( 'rplus_topcontent_options_ga_propertyid', 0 );
-		if ( ! $ga_propertyid ) {
+		$ga_profile = get_option( 'rplus_topcontent_options_ga_profile', [] );
+		if ( empty( $ga_profile['web-property-id'] ) ) {
 			return;
 		}
 
 		$days = get_option( 'rplus_topcontent_options_sync_days', 30 );
 		$from = date( 'Y-m-d', strtotime( "-$days day" ) );
 		$to = date( 'Y-m-d' );
-		$data = $client_adapter->get_page_views( $ga_propertyid, $from, $to );
+		$data = $client_adapter->get_page_views( $ga_profile['web-property-id'], $from, $to );
 
 		$syncer = new SyncGoogleAnalyticsDataWithPosts( $data );
 		$syncer->process();

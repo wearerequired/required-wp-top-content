@@ -212,7 +212,7 @@ class GoogleClientAdapter {
 	 * @since 2.0.0
 	 * @access public
 	 *
-	 * @return \Google_Service_Analytics_Accounts List of Google Analytics accounts.
+	 * @return \Google_Service_Analytics_Accounts List of Google Analytics accounts, empty array on failure.
 	 */
 	public function get_accounts() {
 		try {
@@ -232,7 +232,7 @@ class GoogleClientAdapter {
 	 *
 	 * @param string $account_id      An account ID.
 	 * @param string $web_property_id A web property ID or '~all' for all.
-	 * @return \Google_Service_Analytics_Profiles List of Google Analytics profiles.
+	 * @return \Google_Service_Analytics_Profiles List of Google Analytics profiles, empty array on failure.
 	 */
 	public function get_profiles( $account_id, $web_property_id = '~all' ) {
 		try {
@@ -242,6 +242,24 @@ class GoogleClientAdapter {
 		}
 
 		return $profiles;
+	}
+
+	/**
+	 * Retrieves a Google Analytics profile.
+	 *
+	 * @param string $account_id      Account ID to retrieve the profile for.
+	 * @param string $web_property_id Web property ID to retrieve the profile for.
+	 * @param string $profile_id      Profile ID to retrieve the profile for.
+	 * @return \Google_Service_Analytics_Profile|null Google profile on sucess, null on failure.
+	 */
+	public function get_profile( $account_id, $web_property_id, $profile_id ) {
+		try {
+			$profile = $this->service->management_profiles->get( $account_id, $web_property_id, $profile_id );
+		} catch ( Exception $e ) {
+			return null;
+		}
+
+		return $profile;
 	}
 
 	/**
@@ -273,7 +291,9 @@ class GoogleClientAdapter {
 			foreach ( $profiles as $profile ) {
 				/** @var $profile \Google_Service_Analytics_Profile */
 				$html .= sprintf(
-					'<option value="%s">%s</option>',
+					'<option value="%s:%s:%s">%s</option>',
+					esc_attr( $profile->getAccountId() ),
+					esc_attr( $profile->getWebPropertyId() ),
 					esc_attr( $profile->getId() ),
 					esc_html( sprintf(
 						'%s (%s, %s)',

@@ -39,3 +39,20 @@
 		0 0 0 1px #5b9dd9,
 		0 0 2px 1px rgba(30, 140, 190, .8);
 }
+
+.auth-profile-data {
+	border-spacing: 0;
+	width: 100%;
+	margin: 0 0 1em;
+}
+
+.auth-profile-data caption {
+	text-align: left;
+	font-weight: 600;
+	margin-bottom: .5em;
+}
+
+.auth-profile-data th,
+.auth-profile-data td {
+	padding: .25em 0;
+}

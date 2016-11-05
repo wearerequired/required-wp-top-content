@@ -24,6 +24,7 @@ delete_option( 'rplus_topcontent_options_ga_auth_type' );
 delete_option( 'rplus_topcontent_options_ga_access_token' );
 delete_option( 'rplus_topcontent_options_sync_days' );
 delete_option( 'rplus_topcontent_options_ga_propertyid' );
+delete_option( 'rplus_topcontent_options_ga_profile' );
 delete_option( 'rplus_topcontent_options_ga_client_id' );
 delete_option( 'rplus_topcontent_options_ga_client_secret' );
 delete_option( 'rplus_topcontent_options_ga_access_code' );
