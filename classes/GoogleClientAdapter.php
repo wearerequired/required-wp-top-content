@@ -30,6 +30,16 @@ class GoogleClientAdapter {
 	private $client;
 
 	/**
+	 * Service for Google Analytics.
+	 *
+	 * @since 2.0.0
+	 * @access private
+	 *
+	 * @var \Google_Service_Analytics
+	 */
+	private $service;
+
+	/**
 	 * File path to the default credentials file.
 	 *
 	 * @since 2.0.0
