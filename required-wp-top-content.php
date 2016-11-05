@@ -28,11 +28,13 @@
 
 namespace Required\WP_Top_Content;
 
-if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
-	return;
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require __DIR__ . '/vendor/autoload.php';
 }
 
-require __DIR__ . '/vendor/autoload.php';
+if ( ! class_exists( __NAMESPACE__ . '\Plugin' ) ) {
+	return;
+}
 
 define( __NAMESPACE__ . '\PLUGIN_FILE', __FILE__ );
 define( __NAMESPACE__ . '\PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
