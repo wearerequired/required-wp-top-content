@@ -241,14 +241,14 @@ class Plugin {
 		}
 
 		$ga_profile = get_option( 'rplus_topcontent_options_ga_profile', [] );
-		if ( empty( $ga_profile['web-property-id'] ) ) {
+		if ( empty( $ga_profile['profile-id'] ) ) {
 			return;
 		}
 
 		$days = get_option( 'rplus_topcontent_options_sync_days', 30 );
 		$from = date( 'Y-m-d', strtotime( "-$days day" ) );
 		$to = date( 'Y-m-d' );
-		$data = $client_adapter->get_page_views( $ga_profile['web-property-id'], $from, $to );
+		$data = $client_adapter->get_page_views( $ga_profile['profile-id'], $from, $to );
 
 		$syncer = new SyncGoogleAnalyticsDataWithPosts( $data );
 		$syncer->process();
