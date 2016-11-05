@@ -156,12 +156,28 @@ class Plugin {
 
 		$options_ga_access_token = new Setting( $options_group, 'rplus_topcontent_options_ga_access_token' );
 		$options_ga_access_token->sanitize_callback = function( $value ) {
-			if ( is_array( $value ) ) {
-				return $value;
+			if ( ! is_array( $value ) ) {
+				return [];
 			}
 
-			// The submitted value is not valid, set default option to an empty array.
-			return [];
+			$new_value = array_map( 'sanitize_text_field', $value );
+			$new_value = array_filter( $new_value );
+
+			if (
+				count( $new_value ) !== 5 ||
+				empty( $new_value['access_token'] ) ||
+				empty( $new_value['token_type'] ) ||
+				empty( $new_value['expires_in'] ) ||
+				empty( $new_value['refresh_token'] ) ||
+				empty( $new_value['created'] )
+			) {
+				return [];
+			}
+
+			$new_value['expires_in'] = (int) $new_value['expires_in'];
+			$new_value['created']    = (int) $new_value['created'];
+
+			return $new_value;
 		};
 		$options_ga_access_token->register();
 
@@ -175,12 +191,23 @@ class Plugin {
 
 		$options_ga_profile = new Setting( $options_group, 'rplus_topcontent_options_ga_profile' );
 		$options_ga_profile->sanitize_callback = function( $value ) {
-			if ( is_array( $value ) ) {
-				return $value;
+			if ( ! is_array( $value ) ) {
+				return [];
 			}
 
-			// The submitted value is not valid, set default option to an empty array.
-			return [];
+			$new_value = array_map( 'sanitize_text_field', $value );
+			$new_value = array_filter( $new_value );
+
+			if (
+				count( $new_value ) !== 3 ||
+				empty( $new_value['account-id'] ) ||
+				empty( $new_value['web-property-id'] ) ||
+				empty( $new_value['profile-id'] )
+			) {
+				return [];
+			}
+
+			return $new_value;
 		};
 		$options_ga_profile->register();
 
