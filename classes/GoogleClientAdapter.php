@@ -215,7 +215,13 @@ class GoogleClientAdapter {
 	 * @return \Google_Service_Analytics_Accounts List of Google Analytics accounts.
 	 */
 	public function get_accounts() {
-		return $this->service->management_accounts->listManagementAccounts();
+		try {
+			$accounts = $this->service->management_accounts->listManagementAccounts();
+		} catch ( Exception $e ) {
+			return [];
+		}
+
+		return $accounts;
 	}
 
 	/**
@@ -229,7 +235,13 @@ class GoogleClientAdapter {
 	 * @return \Google_Service_Analytics_Profiles List of Google Analytics profiles.
 	 */
 	public function get_profiles( $account_id, $web_property_id = '~all' ) {
-		return $this->service->management_profiles->listManagementProfiles( $account_id, $web_property_id );
+		try {
+			$profiles = $this->service->management_profiles->listManagementProfiles( $account_id, $web_property_id );
+		} catch ( Exception $e ) {
+			return [];
+		}
+
+		return $profiles;
 	}
 
 	/**
