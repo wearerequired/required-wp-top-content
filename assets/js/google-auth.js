@@ -1,9 +1,12 @@
 (function( settings, $ ){
 	$( function() {
-		var $authStep1 = $( '#auth-step-1' ),
+		var $container = $( '.google-api-auth' ),
+			$authStep1 = $( '#auth-step-1' ),
 			$authStep2 = $( '#auth-step-2' ),
 			$authStep3 = $( '#auth-step-3' ),
-			$customAPICredentialsWrapper = $( '.custom-api-credentials' );
+			$notificationContainer = $( '#google-api-auth-notification-container' ),
+			notificationsTemplate = wp.template( 'required-wp-top-content-notifications' ),
+			$customAPICredentialsWrapper = $authStep1.find( '.custom-api-credentials' );
 
 		// Toogle client ID/secret fields.
 		$( '[name="api-credentials-type"]' ).on( 'change', function() {
@@ -13,6 +16,9 @@
 		// Save auth type/data.
 		$( '#save-auth-data' ).on( 'click', function() {
 			var data = {}, request;
+
+			$container.addClass( 'is-saving' );
+			$notificationContainer.empty();
 
 			_.each( $authStep1.serializeArray(), function( pair ) {
 				data[ pair.name ] = pair.value;
@@ -26,7 +32,17 @@
 				$authStep2.removeClass( 'hidden' );
 			});
 			request.fail( function( response ) {
-				console.error( response );
+				var notifications = [];
+				_.each( response, function( notification ) {
+					notification.type = 'error';
+					notifications.push( notification );
+				});
+				$notificationContainer.append( $.trim(
+					notificationsTemplate( { notifications: notifications, altNotice: true } )
+				) );
+			});
+			request.always( function() {
+				$container.removeClass( 'is-saving' );
 			});
 		});
 
@@ -58,6 +74,9 @@
 		$( '#authorize' ).on( 'click', function() {
 			var data = {}, request;
 
+			$container.addClass( 'is-saving' );
+			$notificationContainer.empty();
+
 			_.each( $authStep2.serializeArray(), function( pair ) {
 				data[ pair.name ] = pair.value;
 			});
@@ -70,7 +89,17 @@
 				$authStep3.removeClass( 'hidden' );
 			});
 			request.fail( function( response ) {
-				console.error( response );
+				var notifications = [];
+				_.each( response, function( notification ) {
+					notification.type = 'error';
+					notifications.push( notification );
+				});
+				$notificationContainer.append( $.trim(
+					notificationsTemplate( { notifications: notifications, altNotice: true } )
+				) );
+			});
+			request.always( function() {
+				$container.removeClass( 'is-saving' );
 			});
 		});
 	});

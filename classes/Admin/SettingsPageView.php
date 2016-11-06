@@ -66,7 +66,11 @@ class SettingsPageView implements AdminPageViewInterface {
 	private function render_authorization_form() {
 		?>
 		<div class="card google-api-auth">
+			<div class="saving-indicator"><span class="spinner"></span><?php _e( 'Saving&hellip;', 'required-wp-top-content' ); ?></div>
+
 			<h2><?php _e( 'Google API Authorization', 'required-wp-top-content' ); ?></h2>
+
+			<div id="google-api-auth-notification-container"></div>
 
 			<form
 				id="auth-step-1"

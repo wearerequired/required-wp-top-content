@@ -4,6 +4,24 @@
 	clear: both;
 }
 
+.saving-indicator {
+	display: none;
+	line-height: 20px;
+	float: right;
+}
+
+.is-saving .saving-indicator {
+	display: flex;
+}
+
+.saving-indicator .spinner {
+	margin: 0 .3em 0;
+}
+
+.is-saving .saving-indicator .spinner {
+	visibility: visible;
+}
+
 .google-api-auth .long-text {
 	width: 100%;
 }

@@ -86,6 +86,7 @@ class SettingsPage implements AdminPageInterface {
 
 		add_action( 'admin_print_scripts-' . $this->page_hook, [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_print_styles-' . $this->page_hook, [ $this, 'enqueue_styles' ] );
+		add_action( 'admin_footer-' . $this->page_hook, [ $this, 'print_js_templates' ] );
 	}
 
 	/**
@@ -100,6 +101,26 @@ class SettingsPage implements AdminPageInterface {
 			plugins_url( 'assets/js/google-auth.js', PLUGIN_FILE ),
 			[ 'jquery', 'underscore', 'wp-util' ]
 		);
+	}
+
+	/**
+	 * Prints JavaScript templates used for this page.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 */
+	public function print_js_templates() {
+		?>
+		<script type="text/html" id="tmpl-required-wp-top-content-notifications">
+			<ul>
+				<# _.each( data.notifications, function( notification ) { #>
+					<li class="notice notice-{{ notification.type || 'info' }}{{ data.altNotice ? ' notice-alt' : '' }}{{ data.isDismissible ? ' is-dismissible' : '' }}">
+						<p>{{{ notification.message || notification.code }}}</p>
+					</li>
+				<# } ); #>
+			</ul>
+		</script>
+		<?php
 	}
 
 	/**
@@ -124,21 +145,25 @@ class SettingsPage implements AdminPageInterface {
 		$errors = new WP_Error();
 
 		if ( empty( $_REQUEST['api-credentials-type'] ) ) {
-			$errors->add( 'missing_api-credentials-type' );
+			$errors->add( 'missing_api-credentials-type', __( 'The authentication type is missing.', 'required-wp-top-content' ) );
 		} else {
 			update_option( 'rplus_topcontent_options_ga_auth_type', $_REQUEST['api-credentials-type'] );
 		}
 
-		$type = get_option( 'rplus_topcontent_options_ga_auth_type', 'custom' );
+		if ( $errors->get_error_codes() ) {
+			wp_send_json_error( $errors );
+		}
+
+		$type = get_option( 'rplus_topcontent_options_ga_auth_type' );
 
 		if ( 'custom' === $type && empty( $_REQUEST['google-client-id'] ) ) {
-			$errors->add( 'missing_google-client-id' );
+			$errors->add( 'missing_google-client-id', __( 'The client ID is missing.', 'required-wp-top-content' ) );
 		} else {
 			update_option( 'rplus_topcontent_options_ga_client_id', $_REQUEST['google-client-id'] );
 		}
 
 		if ( 'custom' === $type && empty( $_REQUEST['google-client-secret'] ) ) {
-			$errors->add( 'missing_google-client-secret' );
+			$errors->add( 'missing_google-client-secret', __( 'The client secret is missing.', 'required-wp-top-content' ) );
 		} else {
 			update_option( 'rplus_topcontent_options_ga_client_secret', $_REQUEST['google-client-secret'] );
 		}
@@ -164,7 +189,7 @@ class SettingsPage implements AdminPageInterface {
 
 		$errors = new WP_Error();
 		if ( empty( $_REQUEST['google-auth-code'] ) ) {
-			$errors->add( 'missing_google-auth-code' );
+			$errors->add( 'missing_google-auth-code', __( 'The authentication code is missing.', 'required-wp-top-content' ) );
 		} else {
 			update_option( 'rplus_topcontent_options_ga_access_code', $_REQUEST['google-auth-code'] );
 		}
@@ -186,7 +211,11 @@ class SettingsPage implements AdminPageInterface {
 			wp_send_json_error( $errors );
 		}
 
-		update_option( 'rplus_topcontent_options_ga_access_token', $access_token );
+		$result = update_option( 'rplus_topcontent_options_ga_access_token', $access_token );
+		if ( ! $result ) {
+			$errors->add( 'update_failed', __( 'The settings couldn&#8217;t be saved. Please try again.', 'required-wp-top-content' ) );
+			wp_send_json_error( $errors );
+		}
 
 		$html  = '<select id="google-analytics-profile" name="google-analytics-profile">';
 		$html .= $client_adapter->get_profiles_as_html_options();
