@@ -29,7 +29,7 @@ class TopContentAPI {
 	 * @param array $post_types  Array of post types to get top contents from
 	 * @param int   $count       Limit of contents to fetch
 	 * @param array $query_args  Optional. Query parameters.
-	 * @return array|bool Array of WP_Post Objects or false when no top contents are available.
+	 * @return array Array of posts.
 	 */
 	public static function get_top_content( $post_types, $count, $query_args ) {
 		$args = apply_filters( 'rplus_wp_top_content_default_args', wp_parse_args( $query_args, [
@@ -55,12 +55,9 @@ class TopContentAPI {
 			],
 		] ) );
 
-		$the_query = new WP_Query( $args );
-		$posts = empty( $the_query->found_posts ) ? false : $the_query->posts;
+		$query = new WP_Query( $args );
 
-		wp_reset_query();
-
-		return $posts;
+		return $query->posts;
 	}
 
 	/**
