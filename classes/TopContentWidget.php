@@ -242,7 +242,7 @@ class TopContentWidget extends WP_Widget implements WidgetInterface {
 
 		echo apply_filters( 'rplus_wp_top_content_widget_list_start', '<ul class="rplus-top-content">' );
 
-		rplus_wp_top_content( $instance['posttypes'], $instance['count'], 'rplus-wp-top-content-widget.php', $query );
+		TopContentAPI::render_top_content( $instance['posttypes'], $instance['count'], 'rplus-wp-top-content-widget.php', $query );
 
 		echo apply_filters( 'rplus_wp_top_content_widget_list_end', '</ul>' );
 
