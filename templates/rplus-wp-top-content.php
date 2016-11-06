@@ -34,13 +34,13 @@
 <!-- START: templates/rplus-wp-top-content -->
 <div class="<?php rplus_wp_top_content_classes( array( 'post-' . $post->ID ) ); ?>">
 
-    <article>
-        <header>
-            <h2><?php echo esc_html( get_the_title( $post->ID ) ); ?></h2>
-        </header>
+	<article>
+		<header>
+			<h2><?php echo esc_html( get_the_title( $post->ID ) ); ?></h2>
+		</header>
 
-        <?php echo apply_filters( 'get_the_excerpt', $post->post_excerpt ); ?>
+		<?php echo apply_filters( 'get_the_excerpt', $post->post_excerpt ); ?>
 
-    </article>
+	</article>
 </div>
 <!-- END: templates/rplus-wp-top-content -->

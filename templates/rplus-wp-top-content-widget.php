@@ -24,9 +24,9 @@
 <!-- START: templates/rplus-wp-top-content-widget -->
 <li class="<?php rplus_wp_top_content_classes( array( 'post-' . $post->ID ) ); ?>">
 
-    <a href="<?php echo get_permalink( $post->ID ); ?>">
-        <?php echo get_the_title( $post->ID ); ?>
-    </a>
+	<a href="<?php echo get_permalink( $post->ID ); ?>">
+		<?php echo get_the_title( $post->ID ); ?>
+	</a>
 
 </li>
 <!-- END: templates/rplus-wp-top-content-widget -->
