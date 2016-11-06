@@ -21,12 +21,11 @@
  * @copyright 2014 required gmbh
  */
 ?>
+
 <!-- START: templates/rplus-wp-top-content-widget -->
-<li class="<?php rplus_wp_top_content_classes( array( 'post-' . $post->ID ) ); ?>">
-
-	<a href="<?php echo get_permalink( $post->ID ); ?>">
-		<?php echo get_the_title( $post->ID ); ?>
+<li class="<?php rplus_wp_top_content_classes( array( 'post-' . get_the_ID() ) ); ?>">
+	<a href="<?php the_permalink(); ?>">
+		<?php the_title(); ?>
 	</a>
-
 </li>
 <!-- END: templates/rplus-wp-top-content-widget -->

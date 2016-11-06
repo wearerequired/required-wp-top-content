@@ -20,27 +20,16 @@
  * @link      http://required.ch
  * @copyright 2014 required gmbh
  */
-
-/**
- * Let's begin shall we?
- *
- * You have access to the WP_Post object through $post. It's for you to play
- * and render information about your post/page/post_type that you want to.
- *
- * @param   int     $post      WP_Post object for the current post.
- */
 ?>
 
 <!-- START: templates/rplus-wp-top-content -->
-<div class="<?php rplus_wp_top_content_classes( array( 'post-' . $post->ID ) ); ?>">
-
+<div class="<?php rplus_wp_top_content_classes( array( 'post-' . get_the_ID() ) ); ?>">
 	<article>
 		<header>
-			<h2><?php echo esc_html( get_the_title( $post->ID ) ); ?></h2>
+			<h2><?php the_title(); ?></h2>
 		</header>
 
-		<?php echo apply_filters( 'get_the_excerpt', $post->post_excerpt ); ?>
-
+		<?php the_excerpt(); ?>
 	</article>
 </div>
 <!-- END: templates/rplus-wp-top-content -->
