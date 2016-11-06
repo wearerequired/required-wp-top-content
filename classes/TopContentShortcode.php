@@ -10,7 +10,7 @@
 namespace Required\WP_Top_Content;
 
 /**
- * Class used  to implement the Top Content shortcode.
+ * Class used to implement the Top Content shortcode.
  *
  * @since 2.0.0
  */

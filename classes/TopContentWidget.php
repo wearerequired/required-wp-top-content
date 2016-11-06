@@ -11,7 +11,7 @@ namespace Required\WP_Top_Content;
 use WP_Widget;
 
 /**
- * Class used  to implement the Top Content widget.
+ * Class used to implement the Top Content widget.
  *
  * @since 2.0.0
  *
