@@ -79,6 +79,10 @@ class Plugin {
 		// Cron job for data sync.
 		add_action( self::CRON_HOOK, [ self::class, 'sync_ga_data' ] );
 
+		// Shortcode.
+		$top_content_shortcode = new TopContentShortcode( 'rplus-topcontent' );
+		add_shortcode( (string) $top_content_shortcode, [ $top_content_shortcode, 'callback' ] );
+
 		// Meta.
 		$top_content_exclude_meta = new TopContentExcludeMeta();
 		$top_content_exclude_meta->register();
