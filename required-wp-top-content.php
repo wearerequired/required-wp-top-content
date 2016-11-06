@@ -37,6 +37,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Plugin' ) ) {
 }
 
 define( __NAMESPACE__ . '\PLUGIN_FILE', __FILE__ );
+define( __NAMESPACE__ . '\PLUGIN_DIR', __DIR__ );
 define( __NAMESPACE__ . '\PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 register_activation_hook( __FILE__, [ Plugin::class, 'activated' ] );
