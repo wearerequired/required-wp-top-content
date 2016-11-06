@@ -112,8 +112,8 @@ class TopContentAPI {
 		$top_content = self::get_top_content( $post_types, $count, $query_args );
 
 		if ( $top_content ) {
-			foreach ( $top_content as $tc ) {
-				self::load_template( $template, $tc );
+			foreach ( $top_content as $post ) {
+				self::load_template( $template, $post );
 			}
 		}
 	}
@@ -142,6 +142,8 @@ class TopContentAPI {
 			$template_path = PLUGIN_DIR . '/templates/'  . $template;
 		}
 
+		setup_postdata( $post );
 		include $template_path;
+		wp_reset_postdata();
 	}
 }
