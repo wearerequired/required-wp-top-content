@@ -129,10 +129,14 @@ class TopContentAPI {
 	 * @access private
 	 * @static
 	 *
-	 * @param string  $template The template to be loaded (filename incl. extension).
-	 * @param WP_Post $post     The WP_Post object to be used inside the template.
+	 * @global WP_Post $post The global `$post` object.
+	 *
+	 * @param string  $template    The template to be loaded (filename incl. extension).
+	 * @param WP_Post $top_content The WP_Post object to be used inside the template.
 	 */
-	private static function load_template( $template, $post ) {
+	private static function load_template( $template, $top_content ) {
+		global $post;
+
 		// Check if the template file exists in the theme folder.
 		if ( $overridden_template = locate_template( $template ) ) {
 			// Load the requested template file from the theme or child theme folder.
@@ -142,6 +146,7 @@ class TopContentAPI {
 			$template_path = PLUGIN_DIR . '/templates/'  . $template;
 		}
 
+		$post = $top_content;
 		setup_postdata( $post );
 		include $template_path;
 		wp_reset_postdata();
