@@ -82,7 +82,7 @@ class TopContentShortcode implements ShortcodeInterface {
 
 		ob_start();
 
-	//	$this->render_top_content( $post_types, $count, $template, array() );
+		TopContentAPI::render_top_content( $post_types, $count, $atts['template'] );
 
 		return ob_get_clean();
 	}
