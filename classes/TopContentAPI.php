@@ -37,7 +37,7 @@ class TopContentAPI {
 			'nopaging'       => true,
 			'post_status'    => 'publish',
 			'posts_per_page' => $count,
-			/*'orderby'        => 'meta_value_num',
+			'orderby'        => 'meta_value_num',
 			'meta_type'      => 'NUMERIC',
 			'order'          => 'DESC',
 			'meta_key'       => 'rplus_top_content_pageviews',
@@ -52,7 +52,7 @@ class TopContentAPI {
 					'key'     => 'topcontent_exclude',
 					'compare' => 'NOT EXISTS',
 				],
-			],*/
+			],
 		] ) );
 
 		$the_query = new WP_Query( $args );
