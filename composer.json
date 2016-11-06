@@ -1,7 +1,7 @@
 {
   "name": "wearerequired/required-wp-top-content",
   "description": "WordPress Top Content Plugin - Using Google Analytics Data",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha",
   "type": "wordpress-plugin",
   "license": "GPL-3.0",
   "authors": [
@@ -12,24 +12,13 @@
       "role": "Developer"
     }
   ],
-  "config": {
-    "vendor-dir": "./includes/vendor"
-  },
   "require": {
-    "google/apiclient": "1.1.7"
+    "php": ">=5.6",
+    "google/apiclient": "^2.0"
   },
-  "repositories" : [
-    {
-      "type": "package",
-      "package": {
-        "name": "google/apiclient",
-        "version": "1.1.7",
-        "source": {
-          "url": "git@github.com:google/google-api-php-client.git",
-          "type": "git",
-          "reference": "master"
-        }
-      }
+  "autoload":     {
+    "psr-4": {
+      "Required\\WP_Top_Content\\": "classes"
     }
-  ]
+  }
 }

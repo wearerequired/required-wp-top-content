@@ -1,4 +1,3 @@
-# IDE meta files
-.idea
+# Composer
 composer.lock
-includes/vendor
+vendor/*
