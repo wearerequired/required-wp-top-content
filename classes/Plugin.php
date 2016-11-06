@@ -215,7 +215,11 @@ class Plugin {
 		};
 		$options_ga_profile->register();
 
-		$options_group = 'required-wp-top-content-options';
+		$options_sync_lastrun = new Setting( $options_group, 'rplus_topcontent_options_sync_lastrun' );
+		$options_sync_lastrun->sanitize_callback = 'sanitize_text_field';
+		$options_sync_lastrun->register();
+
+		$options_group = 'required-wp-top-content-options-public';
 
 		$options_sync_days = new Setting( $options_group, 'rplus_topcontent_options_sync_days' );
 		$options_sync_days->sanitize_callback = function( $value ) {
@@ -257,6 +261,8 @@ class Plugin {
 		$syncer = new SyncGoogleAnalyticsDataWithPosts( $data );
 		$syncer->process();
 		$syncer->cleanup();
+
+		update_option( 'rplus_topcontent_options_sync_lastrun', date( 'Y-m-d H:i:s' ) );
 	}
 
 	/**

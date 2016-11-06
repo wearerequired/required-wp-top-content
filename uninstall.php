@@ -28,3 +28,4 @@ delete_option( 'rplus_topcontent_options_ga_profile' );
 delete_option( 'rplus_topcontent_options_ga_client_id' );
 delete_option( 'rplus_topcontent_options_ga_client_secret' );
 delete_option( 'rplus_topcontent_options_ga_access_code' );
+delete_option( 'rplus_topcontent_options_sync_lastrun' );

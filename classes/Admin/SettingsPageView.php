@@ -266,7 +266,7 @@ class SettingsPageView implements AdminPageViewInterface {
 
 		<form method="post" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
 			<?php
-			settings_fields( 'required-wp-top-content-options' );
+			settings_fields( 'required-wp-top-content-options-public' );
 
 			do_settings_sections( 'rpluswptopcontent' );
 
