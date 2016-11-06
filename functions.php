@@ -1,31 +1,43 @@
 <?php
 
-
 if ( ! function_exists( 'rplus_wp_top_content' ) ) :
 
-	function rplus_wp_top_content( Array $post_types = array( 'post', 'page' ), $count = 5, $template = 'rplus-wp-top-content.php', $query_args = array() ) {
+	/**
+	 * Prints Top Content item CSS classes.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array  $post_types Optional. Array of post types of the top contents. Default 'post' and 'page'.
+	 * @param int    $count      Optional. The limit to display. Default 5.
+	 * @param string $template   Optional. The template to load for each element. Default 'rplus-wp-top-content.php'
+	 * @param array  $query_args Optional. Query arguments for wp_query.
+	 */
+	function rplus_wp_top_content( $post_types = array( 'post', 'page' ), $count = 5, $template = 'rplus-wp-top-content.php', $query_args = [] ) {
+		if ( ! class_exists( '\Required\WP_Top_Content\TopContentAPI' ) ) {
+			return;
+		}
 
-		if (  ! class_exists( 'RplusWpTopContent' ) )
-			wp_die( __( 'Oops, it looks like RplusWpTopContent doesn\'t exist!', 'rpluswptopcontent' ) );
-
-		$wp_top_content = RplusWpTopContent::get_instance();
-
-		$wp_top_content->render_top_content( $post_types, $count, $template, $query_args );
-
+		\Required\WP_Top_Content\TopContentAPI::render_top_content( $post_types, $count, $template, $query_args );
 	}
 
 endif;
 
 if ( ! function_exists( 'rplus_wp_top_content_classes' ) ) :
 
+	/**
+	 * Prints Top Content item CSS classes.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string|array $classes Array or space-separated list of classes
+	 *                              to append to the defaults.
+	 */
 	function rplus_wp_top_content_classes( $classes ) {
+		if ( ! class_exists( '\Required\WP_Top_Content\TopContentAPI' ) ) {
+			return;
+		}
 
-		if (  ! class_exists( 'RplusWpTopContent' ) )
-			wp_die( __( 'Oops, it looks like RplusWpTopContent doesn\'t exist!', 'rpluswptopcontent' ) );
-
-		$wp_top_content = RplusWpTopContent::get_instance();
-
-		echo $wp_top_content->item_classes( $classes );
+		echo \Required\WP_Top_Content\TopContentAPI::item_classes( $classes );
 	}
 
-endif; // ( ! function_exists( 'rplus_wp_team_list_classes' ) )
+endif;

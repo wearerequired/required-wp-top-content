@@ -111,7 +111,7 @@ class TopContentAPI {
 	 * @param string $template   The template to load for each element.
 	 * @param array  $query_args Optional. Query arguments for wp_query.
 	 */
-	public static function render_top_content( $post_types, $count, $template, $query_args ) {
+	public static function render_top_content( $post_types, $count, $template, $query_args = [] ) {
 		$top_content = self::get_top_content( $post_types, $count, $query_args );
 
 		if ( $top_content ) {
