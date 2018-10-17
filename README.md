@@ -7,6 +7,8 @@
 
 A WordPress plugin to sync google anaytics data (pageviews & visits) with posts and pages.
 
+*Archived*: Use [Google Analytics Top Content Widget](https://wordpress.org/plugins/google-analytics-top-posts-widget/) instead. 
+
 # Installation
 After you've installed and activated the plugin please go to the plugin settings screen and fill in all needed fields. You'll find informations on how to get the Google API options for each setting.
 
